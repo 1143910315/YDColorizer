@@ -1,0 +1,6 @@
+﻿D:\IDE\Microsoft Visual Studio 2017\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(387,5): warning MSB8028: 中间目录(Debug\)包含从另一个项目(lua.vcxproj)共享的文件。   这会导致错误的清除和重新生成行为。
+  正在跳过...(未检测到相关更改)
+  code.cpp
+    正在创建库 E:\code\Visual Studio 2017\lua\Debug\myLua.lib 和对象 E:\code\Visual Studio 2017\lua\Debug\myLua.exp
+  lua.vcxproj -> E:\code\Visual Studio 2017\lua\Debug\myLua.dll
+  lua.vcxproj -> E:\code\Visual Studio 2017\lua\Debug\myLua.pdb (Partial PDB)
