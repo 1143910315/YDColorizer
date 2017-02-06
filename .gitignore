@@ -1,5 +1,10 @@
 .vs/
-
+Debug/
+Release/
+lua/Debug/
+lua/Release/
+lualib/Debug/
+lualib/Release/
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
