@@ -27,6 +27,15 @@
     <ClCompile Include="Tool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Language.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinFind.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WinForm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="YDColorizer.lua">
@@ -41,6 +50,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Language.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinFind.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="WinForm.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

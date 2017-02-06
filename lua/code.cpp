@@ -6,6 +6,8 @@ Description:       |颜色插件主要函数
 **************************************************/
 #include <windows.h>
 #include "Config.h"
+#include "Language.h"
+#include "WinForm.h"
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
@@ -26,8 +28,9 @@ DWORD WINAPI task(LPVOID lpParamter) {
 	//	TEXT("XPos"), //项名
 	//	0, //没找到此项时的缺省返回值
 	//	TEXT("C:\\test\\debug\\test.ini")); //配置文件的准确路径
+	WinForm WF = WinForm();
 	Config C = Config();
-
+	Language L = Language(C.GetLanguage());
 
 	ULONGLONG time = GetTickCount64();
 	while (loop)

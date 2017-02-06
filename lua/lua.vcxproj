@@ -151,16 +151,22 @@
   <ItemGroup>
     <ClCompile Include="code.cpp" />
     <ClCompile Include="Config.cpp" />
+    <ClCompile Include="Language.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="Tool.cpp" />
+    <ClCompile Include="WinFind.cpp" />
+    <ClCompile Include="WinForm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="YDColorizer.lua" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Config.h" />
+    <ClInclude Include="Language.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="Tool.h" />
+    <ClInclude Include="WinFind.h" />
+    <ClInclude Include="WinForm.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="注释模板.txt" />
