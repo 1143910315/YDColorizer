@@ -1,24 +1,28 @@
 /*************************************************
 Author:            |メ破坏者☆
-Date:              |2017-02-06
+Date:              |2017-02-07
 version：          |0.0.0
-Description:       |和显示语言有关
+Description:       |富文本控件
 **************************************************/
 #pragma once
 #include <Windows.h>
-class Language
+#include <commctrl.h>
+#include <Richedit.h>
+//#include <afxrich.h>
+#pragma comment(lib,"comctl32.lib")
+#include "Language.h"
+class MyRichEditView 
 {
 public:
-	Language(int language);
-	LPCWSTR lessDLL;
-	LPCWSTR error;
-	LPCWSTR CreateRichEditViewerror;
+	MyRichEditView(HWND hwndParent, const Language* L);
+	bool SetColor();
 	//Config();
 	//WCHAR* initialize();
 	/*bool CharAddChar(char* target, int targetSize, const char* source, int sourceSize);
 	bool ChartoWCHAR(WCHAR* target, int targetSize, const char* source, int sourceSize);
 	WCHAR* ChartoWCHAR(const char* source, int sourceSize);*/
 private:
+	HWND hRichEdit;
 	//char *GetDLLPath();
 	//const char* fileSet = "YDColorizerConfig.ini";//配置文件名
 	//const LPCWSTR globalSet = TEXT("Application");//全局配置项

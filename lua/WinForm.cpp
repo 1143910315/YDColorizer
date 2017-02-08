@@ -1,15 +1,19 @@
 #include "WinForm.h"
 #include <windows.h>
-
-#include "stdio.h"
+//#include <commctrl.h>
+//#include <Richedit.h>
+//#include <afxrich.h>
+//#pragma comment(lib,"comctl32.lib")
+//#include "stdio.h"
 #include <corecrt_wstdio.h>
+#include "MyRichEditView.h"
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 //消息处理函数原形
 
 bool g_btxt = false;
 
-WinForm::WinForm()
+WinForm::WinForm(const Language* L)
 {
 
 	LPCWSTR szClassName = TEXT("WndClass");
@@ -75,11 +79,28 @@ WinForm::WinForm()
 	{
 
 		::MessageBox(NULL, TEXT("创建窗口出错"), TEXT("error"), MB_ICONHAND);
+		return;
 
 	}
-
-
-
+	MyRichEditView RichEdit = MyRichEditView(hwnd,L);
+	//InitCommonControls();
+	//HINSTANCE hinstrich = LoadLibraryW(TEXT("RichEd20.Dll"));
+	//if (!hinstrich) {
+	//	::MessageBox(NULL, TEXT("缺少RichEd20.Dll"), TEXT("error"), MB_ICONHAND);
+	//	return;
+	//}
+	//HWND hRichEdit = CreateWindowExW(0, RICHEDIT_CLASSW, TEXT(""),
+	//	WS_BORDER | WS_CHILD | WS_VISIBLE |
+	//	ES_MULTILINE | WS_VSCROLL | ES_AUTOVSCROLL | WS_TABSTOP,
+	//	0, 0, 100, 100, hwnd, NULL, GetModuleHandle(NULL), NULL);
+	//if (hRichEdit == NULL)
+	//{
+	//	::MessageBox(NULL, TEXT("创建富文本框出错"), TEXT("error"), MB_ICONHAND);
+	//	return;
+	//}
+	//CREATESTRUCTW h;
+	//h.cx = 0;
+	//CRichEditView::PreCreateWindow(cs);
 	::ShowWindow(hwnd, SW_SHOW);	 //显示窗口	 
 
 	::UpdateWindow(hwnd);	 //刷新窗口客户区
@@ -100,7 +121,7 @@ WinForm::WinForm()
 
 	}
 
-
+	//FreeLibrary(hinstrich);
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -127,7 +148,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 			hdc = ::BeginPaint(hwnd, &ps);	//使无效的客户区变得有效,并取得设备环境句柄
 
-			::TextOut(hdc, 0, 0, szText, sizeof(szText)/sizeof(WCHAR));
+			::TextOut(hdc, 0, 0, szText, sizeof(szText) / sizeof(WCHAR));
 
 			::EndPaint(hwnd, &ps);
 
@@ -175,7 +196,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		y = HIWORD(lParam);
 
-		swprintf(info,TEXT("%d_%d"), x, y);
+		swprintf(info, TEXT("%d_%d"), x, y);
 
 		MessageBox(hwnd, info, TEXT("mouse info"), MB_OK);
 

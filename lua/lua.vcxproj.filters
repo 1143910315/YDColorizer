@@ -36,6 +36,9 @@
     <ClCompile Include="WinForm.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MyRichEditView.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="YDColorizer.lua">
@@ -59,6 +62,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="WinForm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyRichEditView.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

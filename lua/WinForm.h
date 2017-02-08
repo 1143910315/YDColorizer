@@ -6,10 +6,11 @@ Description:       |²å¼þ´°¿Ú
 **************************************************/
 #pragma once
 #include <Windows.h>
+#include "Language.h"
 class WinForm
 {
 public:
-	WinForm();
+	WinForm(const Language* L);
 
 	//Config();
 	//WCHAR* initialize();

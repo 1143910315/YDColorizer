@@ -39,6 +39,7 @@
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -152,6 +153,7 @@
     <ClCompile Include="code.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="Language.cpp" />
+    <ClCompile Include="MyRichEditView.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="Tool.cpp" />
     <ClCompile Include="WinFind.cpp" />
@@ -163,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="Config.h" />
     <ClInclude Include="Language.h" />
+    <ClInclude Include="MyRichEditView.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="Tool.h" />
     <ClInclude Include="WinFind.h" />
