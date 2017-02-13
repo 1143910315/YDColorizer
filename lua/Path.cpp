@@ -66,3 +66,11 @@ LPWSTR Path::GetWorldEditStringsFile()
 	free(buffer);
 	return fileName;
 }
+
+LPSTR Path::GetWorldEditStringsFileLPSTR()
+{
+	Tool T = Tool();
+	LPSTR buffer = GetYDWEPath();
+	T.CharAddChar(buffer, MAX_PATH, WorldEditStrings, strlen(WorldEditStrings));
+	return buffer;
+}

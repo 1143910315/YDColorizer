@@ -1,7 +1,7 @@
 /*************************************************
 Author:            |メ破坏者☆
-Date:              |2017-02-07
-version：          |0.0.0
+Date:              |2017-02-13
+version：          |0.0.1
 Description:       |插件窗口
 **************************************************/
 #pragma once
@@ -10,7 +10,7 @@ Description:       |插件窗口
 class WinForm
 {
 public:
-	WinForm(const Language* L);
+	WinForm(HWND h,const Language* L);
 
 	//Config();
 	//WCHAR* initialize();

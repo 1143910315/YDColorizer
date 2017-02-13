@@ -8,6 +8,7 @@ Description:       |颜色插件主要函数
 #include "Config.h"
 #include "Language.h"
 #include "WinForm.h"
+#include "WinFind.h"
 extern "C" {
 #include "lua.h"
 #include "lualib.h"
@@ -30,8 +31,8 @@ DWORD WINAPI task(LPVOID lpParamter) {
 	//	TEXT("C:\\test\\debug\\test.ini")); //配置文件的准确路径
 	Config C = Config();
 	Language L = Language(C.GetLanguage());
-	WinForm WF = WinForm(&L);
-	
+	//WinForm WF = WinForm(&L);
+	WinFind WF = WinFind(&L);
 
 	ULONGLONG time = GetTickCount64();
 	while (loop)
@@ -40,12 +41,7 @@ DWORD WINAPI task(LPVOID lpParamter) {
 		if (now - time > 1000)
 		{
 			time = now;
-#if UNICODE
-			//FindWindowExW(0, 0, TEXT("#32770"), TEXT("666"));
-#else
-			FindWindowExA(0, 0, "#32770", "666");
-#endif // UNICODE
-
+			WF.Find();
 		}
 	}
 	MessageBox(NULL, TEXT("Hello"), TEXT("World"), MB_OK);

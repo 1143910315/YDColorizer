@@ -32,8 +32,8 @@ MyRichEditView::MyRichEditView(HWND hwndParent, const Language* L)
 	}
 	hRichEdit = CreateWindowExW(0, RICHEDIT_CLASSW, TEXT(""),
 		WS_BORDER | WS_CHILD | WS_VISIBLE |
-		ES_MULTILINE | WS_VSCROLL | ES_AUTOVSCROLL | WS_TABSTOP,
-		0, 0, 100, 100, hwndParent, NULL, GetModuleHandle(NULL), NULL);
+		ES_MULTILINE | WS_VSCROLL|WS_HSCROLL | ES_AUTOVSCROLL | WS_TABSTOP,
+		0, 0, 200, 100, hwndParent, NULL, GetModuleHandle(NULL), NULL);
 	if (hRichEdit == NULL)
 	{
 		::MessageBoxW(NULL, L->CreateRichEditViewerror, L->error, MB_ICONHAND);

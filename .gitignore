@@ -1,5 +1,6 @@
 .vs/
 Debug/
+Debug_test/
 Release/
 lua/Debug/
 lua/Release/

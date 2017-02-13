@@ -1,22 +1,32 @@
 /*************************************************
 Author:            |メ破坏者☆
-Date:              |2017-02-07
-version：          |0.0.0
+Date:              |2017-02-13
+version：          |0.1.0
 Description:       |寻找窗口
 **************************************************/
 #pragma once
 #include <Windows.h>
+#include "Language.h"
+typedef wchar_t CHAO[50];
 class WinFind
 {
 public:
-	WinFind();
-
+	WinFind(const Language* L);
+	void Find();
 	//Config();
 	//WCHAR* initialize();
 	/*bool CharAddChar(char* target, int targetSize, const char* source, int sourceSize);
 	bool ChartoWCHAR(WCHAR* target, int targetSize, const char* source, int sourceSize);
 	WCHAR* ChartoWCHAR(const char* source, int sourceSize);*/
 private:
+	struct win
+	{
+		HWND hwnd = NULL;
+		win* next = NULL;
+	}wininfo;
+	const Language* L;
+	//void NextFind(HWND hwnd);
+	CHAO westring[8];
 	//********************************以下为WorldEditStrings.txt_项名
 	LPCWSTR WESTRING_COD_TYPE_STRINGstr;//字符串
 	LPCWSTR WESTRING_UE_DLG_EDITVALUEstr;//编辑单位值 - %s

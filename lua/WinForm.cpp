@@ -13,9 +13,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 bool g_btxt = false;
 
-WinForm::WinForm(const Language* L)
+WinForm::WinForm(HWND h, const Language* L)
 {
-
+	IsWindow(h);
 	LPCWSTR szClassName = TEXT("WndClass");
 
 	WNDCLASSEX wndclass;	//用描述主窗口的参数填充WNDCLASSEX 结构
@@ -56,17 +56,20 @@ WinForm::WinForm(const Language* L)
 
 		TEXT("Hello world"),	 //窗口标题
 
-		WS_OVERLAPPEDWINDOW,	 //窗口风格
+		WS_OVERLAPPED | 
+			WS_CAPTION | 
+			WS_SYSMENU 
+			  ,	 //窗口风格
 
-		CW_USEDEFAULT,	 //默认的窗口X 轴坐标
+		100,	 //默认的窗口X 轴坐标
 
-		CW_USEDEFAULT,	 //默认的窗口Y 轴坐标
+		100,	 //默认的窗口Y 轴坐标
 
-		CW_USEDEFAULT,	 //默认的窗口宽度
+		300,	 //默认的窗口宽度
 
-		CW_USEDEFAULT,	 //默认的窗口高度
+		200,	 //默认的窗口高度
 
-		NULL,	 //没有父窗口句柄
+		NULL,	 //父窗口句柄
 
 		NULL,	 //没有菜单句柄
 
@@ -101,13 +104,13 @@ WinForm::WinForm(const Language* L)
 	//CREATESTRUCTW h;
 	//h.cx = 0;
 	//CRichEditView::PreCreateWindow(cs);
-	::ShowWindow(hwnd, SW_SHOW);	 //显示窗口	 
+	ShowWindow(hwnd, SW_SHOW);	 //显示窗口	 
 
-	::UpdateWindow(hwnd);	 //刷新窗口客户区
+	UpdateWindow(hwnd);	 //刷新窗口客户区
 
 	MSG msg;
 
-	while (::GetMessage(&msg, NULL, 0, 0))   //从消息队列中取出消息,交给消息处理函数处理,直到GetMessage 函数返回FALSE ,结束消息循环
+	while (GetMessage(&msg, NULL, 0, 0))   //从消息队列中取出消息,交给消息处理函数处理,直到GetMessage 函数返回FALSE ,结束消息循环
 
 	{
 
@@ -146,11 +149,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		{
 
-			hdc = ::BeginPaint(hwnd, &ps);	//使无效的客户区变得有效,并取得设备环境句柄
+			hdc = BeginPaint(hwnd, &ps);	//使无效的客户区变得有效,并取得设备环境句柄
 
-			::TextOut(hdc, 0, 0, szText, sizeof(szText) / sizeof(WCHAR));
+			TextOutW(hdc, 0, 0, szText, sizeof(szText) / sizeof(WCHAR));
 
-			::EndPaint(hwnd, &ps);
+			EndPaint(hwnd, &ps);
 
 			g_btxt = true;
 
@@ -188,19 +191,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONDOWN:
 
-		UINT x, y;
+		//UINT x, y;
 
-		WCHAR* info = new WCHAR[50];
+		//WCHAR* info = new WCHAR[50];
 
-		x = LOWORD(lParam);
+		//x = LOWORD(lParam);
 
-		y = HIWORD(lParam);
+		//y = HIWORD(lParam);
 
-		swprintf(info, TEXT("%d_%d"), x, y);
+		//swprintf(info, TEXT("%d_%d"), x, y);
 
-		MessageBox(hwnd, info, TEXT("mouse info"), MB_OK);
+		//MessageBox(hwnd, info, TEXT("mouse info"), MB_OK);
 
-		delete info;
+		//delete info;
 
 		break;
 
