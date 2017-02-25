@@ -9,26 +9,43 @@
 #include "MyRichEditView.h"
 #include "Tool.h"
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);//消息处理函数原形
+//各种信息结构，想添加成员请加至末尾，否则可能引发参数错误！！
 struct Paramter
 {
-	HWND hwnd = NULL;
-	HWND previousHwnd = NULL;
-	const Language* language = NULL;
-	HWND RichEditHwnd = NULL;
+	HWND hwnd = NULL;//伪窗口，这是假的！
+	HWND objectHwnd = NULL;//物编弹窗句柄
+	HWND objectTextHwnd = NULL;//物编弹窗里文本框的句柄
+	const Language* language = NULL;//语言包，一个DLL只创建一次
+	HWND RichEditHwnd = NULL;//富文本控件句柄
+	MyRichEditView* RichEditView = NULL;//富文本类指针
 };
+/*************************************************
+Function:         |monitor
+Description:      |监视物编弹窗是否被关闭，同时监视物编文本改变
+Calls:            |
+Input:            |Paramter：额外数据
+Others:           |用于释放创建的窗口
+*************************************************/
 DWORD WINAPI monitor(LPVOID lpParamter) {
 	Paramter* param = (Paramter*)lpParamter;
-	while (IsWindow(param->previousHwnd))
+	Tool T = Tool();
+	while (IsWindow(param->objectHwnd))
 	{
 		WINDOWINFO info;
 		GetWindowInfo(param->RichEditHwnd, &info);
 		RECT rect = info.rcWindow;
 		WINDOWINFO info1;
-		GetWindowInfo(param->previousHwnd, &info1);
+		GetWindowInfo(param->objectHwnd, &info1);
 		RECT rect1 = info1.rcClient;
 		MoveWindow(param->RichEditHwnd, rect.left - rect1.left, rect.top - rect1.top, rect.right - rect.left, rect.bottom - rect.top, true);
+		LPWSTR text = (LPWSTR)malloc(100 * sizeof(WCHAR));
+		/*int reInt =*/ GetWindowTextW(param->objectTextHwnd, text, 100);
+		param->RichEditView->setText(text);
+		/*char str[10];
+		sprintf(str, "%d", reInt);
+		MessageBox(NULL, text, T.ChartoWCHAR(str, 10), MB_OK);*/
 		Sleep(1000);
-	};
+	}
 	SendMessageW(param->hwnd, WM_DESTROY, 0, 0);
 	ExitThread(0);
 	return 0;
@@ -71,14 +88,14 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 	}
 	param->hwnd = hwnd;
 	WINDOWINFO info;
-	GetWindowInfo(param->previousHwnd, &info);
+	GetWindowInfo(param->objectHwnd, &info);
 	RECT rect = info.rcWindow;
 	MyRichEditView RichEdit = MyRichEditView(hwnd, info.rcClient.bottom - info.rcClient.top, info.rcClient.right - info.rcClient.left, param->language);
 	UpdateWindow(hwnd);	 //刷新窗口客户区
 
-	MoveWindow(param->previousHwnd, rect.left, rect.top, rect.right - rect.left + 200, rect.bottom - rect.top + 200, true);
-	SetParent(RichEdit.getHwnd(), param->previousHwnd);
-	CreateThread(NULL, 0, monitor, NULL, 0, NULL);
+	MoveWindow(param->objectHwnd, rect.left, rect.top, rect.right - rect.left + 200, rect.bottom - rect.top + 200, true);
+	SetParent(RichEdit.getHwnd(), param->objectHwnd);
+	CreateThread(NULL, 0, monitor, param, 0, NULL);
 	param->RichEditHwnd = RichEdit.getHwnd();
 	MSG msg;
 	while (GetMessage(&msg, NULL, 0, 0))   //从消息队列中取出消息,交给消息处理函数处理,直到GetMessage 函数返回FALSE ,结束消息循环
@@ -171,8 +188,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, msg, wParam, lParam);	// 将我们不处理的消息交给系统做默认处理
 
 }
-WinForm::WinForm(HWND h, const Language* L)
+WinForm::WinForm(HWND h, HWND textH, const Language* L)
 {
-	Paramter* param = new Paramter{ NULL, h, L, NULL };
+	Paramter* param = new Paramter{ NULL, h, textH, L, NULL };
 	CreateThread(NULL, 0, winFormTask, param, 0, NULL);
 }

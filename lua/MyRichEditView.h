@@ -16,7 +16,7 @@ class MyRichEditView
 public:
 	MyRichEditView(HWND hwndParent,long top,long width, const Language* L);
 	bool SetColor();
-	void setText();
+	void setText(LPWSTR text);
 	HWND getHwnd();
 	//Config();
 	//WCHAR* initialize();

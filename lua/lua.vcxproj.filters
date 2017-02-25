@@ -44,6 +44,9 @@
     <None Include="YDColorizer.lua">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="TextConvert.cs">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Path.h">

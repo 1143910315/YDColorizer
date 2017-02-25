@@ -117,7 +117,7 @@ CFM_UNDERLINE	:	dwEffects is valid.*/
 	return false;
 }
 
-void MyRichEditView::setText()
+void MyRichEditView::setText(LPWSTR text)
 {
 }
 

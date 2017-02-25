@@ -10,7 +10,7 @@ Description:       |²å¼þ´°¿Ú
 class WinForm
 {
 public:
-	WinForm(HWND h,const Language* L);
+	WinForm(HWND h,HWND textH,const Language* L);
 
 	//Config();
 	//WCHAR* initialize();

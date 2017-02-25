@@ -86,15 +86,17 @@ void WinFind::Find()
 			/*if (str[0] != '\0') {
 				MessageBoxW(NULL, str, TEXT("World"), MB_OK);
 			}*/
+			//此处跳过的0是触发器的“字符串”，由于改变窗口大小会引发控件的适配，不像物编那样方便，这里保留触发器处的操作。
 			for (int i = 1; i < 8; i++) {
 				if (Tool().equal(str, westring[i], 50 * sizeof(WCHAR))) {
+					HWND textH=FindWindowExW(hwnd,0,TEXT("edit"),NULL);
 					win *temp = &wininfo;
 					while (temp != NULL)
 					{
 						if (temp->hwnd == 0) {
-							temp->hwnd = hwnd;
+							temp->hwnd = hwnd;//防止颜色插件重复创建
 							temp->next = new win{ NULL, NULL };
-							new WinForm(hwnd, L);
+							new WinForm(hwnd,textH, L);
 							雪花快去死;
 						}
 						if (temp->hwnd == hwnd)

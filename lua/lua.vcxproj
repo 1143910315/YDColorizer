@@ -223,6 +223,7 @@
     <ClCompile Include="WinForm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="TextConvert.cs" />
     <None Include="YDColorizer.lua" />
   </ItemGroup>
   <ItemGroup>
