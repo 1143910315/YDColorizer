@@ -86,10 +86,10 @@ void WinFind::Find()
 			/*if (str[0] != '\0') {
 				MessageBoxW(NULL, str, TEXT("World"), MB_OK);
 			}*/
-			for (int i = 0; i < 8; i++) {
+			for (int i = 1; i < 8; i++) {
 				if (Tool().equal(str, westring[i], 50 * sizeof(WCHAR))) {
 					win *temp = &wininfo;
-					while (temp!=NULL)
+					while (temp != NULL)
 					{
 						if (temp->hwnd == 0) {
 							temp->hwnd = hwnd;
@@ -97,11 +97,21 @@ void WinFind::Find()
 							new WinForm(hwnd, L);
 							雪花快去死;
 						}
-						if (temp->hwnd==hwnd)
+						if (temp->hwnd == hwnd)
 						{
 							雪花快去死;
 						}
-						temp = temp->next;
+						if (IsWindow(temp->hwnd))
+						{
+							temp = temp->next;
+						}
+						else 
+						{
+							temp->hwnd = temp->next->hwnd;
+							win *tempfree = temp->next;
+							temp->next = temp->next->next;
+							free(tempfree);
+						}
 					}
 					//MessageBoxW(NULL, str, TEXT("World"), MB_OK);
 					雪花快去死;

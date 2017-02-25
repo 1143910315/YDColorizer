@@ -14,8 +14,10 @@ Description:       |富文本控件
 class MyRichEditView 
 {
 public:
-	MyRichEditView(HWND hwndParent, const Language* L);
+	MyRichEditView(HWND hwndParent,long top,long width, const Language* L);
 	bool SetColor();
+	void setText();
+	HWND getHwnd();
 	//Config();
 	//WCHAR* initialize();
 	/*bool CharAddChar(char* target, int targetSize, const char* source, int sourceSize);

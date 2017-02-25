@@ -4,138 +4,103 @@
 //#include <Richedit.h>
 //#include <afxrich.h>
 //#pragma comment(lib,"comctl32.lib")
-//#include "stdio.h"
+#include <stdio.h>
 #include <corecrt_wstdio.h>
 #include "MyRichEditView.h"
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-//消息处理函数原形
-
-bool g_btxt = false;
-
-WinForm::WinForm(HWND h, const Language* L)
+#include "Tool.h"
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);//消息处理函数原形
+struct Paramter
 {
-	IsWindow(h);
-	LPCWSTR szClassName = TEXT("WndClass");
-
-	WNDCLASSEX wndclass;	//用描述主窗口的参数填充WNDCLASSEX 结构
-
-	wndclass.cbSize = sizeof(wndclass);	//定义结构的大小
-
-	wndclass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;	//定义窗口样式
-
-	wndclass.lpfnWndProc = WndProc;	//指定本窗口的消息处理函数
-
-	wndclass.cbClsExtra = 0;	//没有额外的类内存
-
-	wndclass.cbWndExtra = 0;	//没有额外的窗口内存
-
-	wndclass.hIcon = LoadIcon(NULL, IDI_APPLICATION);	//使用默认的图标
-
-	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);	//使用默认的光标
-
-	wndclass.hbrBackground = (HBRUSH)(COLOR_3DFACE + 1);	//定义窗口的背景颜色为灰色
-
-	wndclass.hInstance = GetModuleHandle(NULL);	//实例句柄
-
-	wndclass.lpszClassName = szClassName;	//窗口类名称
-
-	wndclass.lpszMenuName = NULL;	//不使用菜单
-
-	wndclass.hIconSm = NULL;	//没有类的小图标
-
-								//注册窗口类
-
-	::RegisterClassEx(&wndclass);
-
-	//创建主窗口
-
-	HWND hwnd = ::CreateWindowEx(0,	 //不定义扩展样式
-
-		szClassName,	 //类名
-
-		TEXT("Hello world"),	 //窗口标题
-
-		WS_OVERLAPPED | 
-			WS_CAPTION | 
-			WS_SYSMENU 
-			  ,	 //窗口风格
-
-		100,	 //默认的窗口X 轴坐标
-
-		100,	 //默认的窗口Y 轴坐标
-
-		300,	 //默认的窗口宽度
-
-		200,	 //默认的窗口高度
-
-		NULL,	 //父窗口句柄
-
-		NULL,	 //没有菜单句柄
-
-		GetModuleHandle(NULL),	 //程序实例句柄
-
-		NULL);	 //没有用户数据
-
-	if (hwnd == NULL)
-
+	HWND hwnd = NULL;
+	HWND previousHwnd = NULL;
+	const Language* language = NULL;
+	HWND RichEditHwnd = NULL;
+};
+DWORD WINAPI monitor(LPVOID lpParamter) {
+	Paramter* param = (Paramter*)lpParamter;
+	while (IsWindow(param->previousHwnd))
 	{
-
-		::MessageBox(NULL, TEXT("创建窗口出错"), TEXT("error"), MB_ICONHAND);
-		return;
-
+		WINDOWINFO info;
+		GetWindowInfo(param->RichEditHwnd, &info);
+		RECT rect = info.rcWindow;
+		WINDOWINFO info1;
+		GetWindowInfo(param->previousHwnd, &info1);
+		RECT rect1 = info1.rcClient;
+		MoveWindow(param->RichEditHwnd, rect.left - rect1.left, rect.top - rect1.top, rect.right - rect.left, rect.bottom - rect.top, true);
+		Sleep(1000);
+	};
+	SendMessageW(param->hwnd, WM_DESTROY, 0, 0);
+	ExitThread(0);
+	return 0;
+}
+DWORD WINAPI winFormTask(LPVOID lpParamter) {
+	Paramter* param = (Paramter*)lpParamter;
+	LPCWSTR szClassName = TEXT("WndClass");//窗口类名
+	//用描述主窗口
+	WNDCLASSEXW wndclass{
+		sizeof(wndclass),								//定义结构的大小
+		CS_HREDRAW | CS_VREDRAW | CS_OWNDC,				//定义窗口样式
+		WndProc,										//指定本窗口的消息处理函数
+		NULL, NULL,										//没有额外的类内存，没有额外的窗口内存
+		GetModuleHandleW(NULL),							//实例句柄
+		LoadIconW(NULL, IDI_APPLICATION),				//使用默认的图标
+		LoadCursorW(NULL, IDC_ARROW),					//使用默认的光标
+		(HBRUSH)(COLOR_3DFACE + 1),						//定义窗口的背景颜色为灰色
+		NULL,											//不使用菜单
+		szClassName,									//窗口类名称
+		NULL											//没有类的小图标
+	};
+	RegisterClassExW(&wndclass);//注册窗口类
+	//主窗口的窗口句柄
+	HWND hwnd = CreateWindowExW(
+		0,												//不定义扩展样式
+		szClassName,									//类名
+		NULL,											//窗口标题
+		WS_EX_TOOLWINDOW,								//窗口风格，不在任务栏显示
+		-100, -100, 0, 0,								//窗口X轴坐标，Y轴坐标，窗口宽度，窗口高度
+		NULL,											//父窗口句柄
+		NULL,											//没有菜单句柄
+		GetModuleHandle(NULL),							//程序实例句柄
+		NULL											//没有用户数据
+	);
+	if (hwnd == NULL)
+	{
+		MessageBoxW(NULL, TEXT("创建窗口出错"), TEXT("error"), MB_ICONHAND);
+		delete param;
+		return 0;
 	}
-	MyRichEditView RichEdit = MyRichEditView(hwnd,L);
-	//InitCommonControls();
-	//HINSTANCE hinstrich = LoadLibraryW(TEXT("RichEd20.Dll"));
-	//if (!hinstrich) {
-	//	::MessageBox(NULL, TEXT("缺少RichEd20.Dll"), TEXT("error"), MB_ICONHAND);
-	//	return;
-	//}
-	//HWND hRichEdit = CreateWindowExW(0, RICHEDIT_CLASSW, TEXT(""),
-	//	WS_BORDER | WS_CHILD | WS_VISIBLE |
-	//	ES_MULTILINE | WS_VSCROLL | ES_AUTOVSCROLL | WS_TABSTOP,
-	//	0, 0, 100, 100, hwnd, NULL, GetModuleHandle(NULL), NULL);
-	//if (hRichEdit == NULL)
-	//{
-	//	::MessageBox(NULL, TEXT("创建富文本框出错"), TEXT("error"), MB_ICONHAND);
-	//	return;
-	//}
-	//CREATESTRUCTW h;
-	//h.cx = 0;
-	//CRichEditView::PreCreateWindow(cs);
-	ShowWindow(hwnd, SW_SHOW);	 //显示窗口	 
-
+	param->hwnd = hwnd;
+	WINDOWINFO info;
+	GetWindowInfo(param->previousHwnd, &info);
+	RECT rect = info.rcWindow;
+	MyRichEditView RichEdit = MyRichEditView(hwnd, info.rcClient.bottom - info.rcClient.top, info.rcClient.right - info.rcClient.left, param->language);
 	UpdateWindow(hwnd);	 //刷新窗口客户区
 
+	MoveWindow(param->previousHwnd, rect.left, rect.top, rect.right - rect.left + 200, rect.bottom - rect.top + 200, true);
+	SetParent(RichEdit.getHwnd(), param->previousHwnd);
+	CreateThread(NULL, 0, monitor, NULL, 0, NULL);
+	param->RichEditHwnd = RichEdit.getHwnd();
 	MSG msg;
-
 	while (GetMessage(&msg, NULL, 0, 0))   //从消息队列中取出消息,交给消息处理函数处理,直到GetMessage 函数返回FALSE ,结束消息循环
-
 	{
-
-
-
-		::TranslateMessage(&msg);	 //转化键盘消息
-
-
-
-		::DispatchMessage(&msg);	 //将消息发送给消息处理函数
+		TranslateMessage(&msg);	 //转化键盘消息
+		DispatchMessage(&msg);	 //将消息发送给消息处理函数
 
 	}
-
+	delete param;
+	ExitThread(0);
 	//FreeLibrary(hinstrich);
+	return 0;
 }
-
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 {
 
-	LPCWSTR szText = TEXT("My first window process ");
+	//LPCWSTR szText = TEXT("My first window process ");
 
-	HDC hdc;	//声明设备环境句柄
+	//HDC hdc;	//声明设备环境句柄
 
-	PAINTSTRUCT ps;
+	//PAINTSTRUCT ps;
 
 	switch (msg)
 
@@ -144,22 +109,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:	//窗口客户区需要重画
 
 	{
+		//ShowWindow(hwnd, SW_HIDE);
+		//if (g_btxt == false)
+		//{
+		//	hdc = BeginPaint(hwnd, &ps);	//使无效的客户区变得有效,并取得设备环境句柄
+		//	TextOutW(hdc, 0, 0, szText, sizeof(szText) / sizeof(WCHAR));
+		//	EndPaint(hwnd, &ps);
+		//	g_btxt = true;
 
-		if (g_btxt == false)
-
-		{
-
-			hdc = BeginPaint(hwnd, &ps);	//使无效的客户区变得有效,并取得设备环境句柄
-
-			TextOutW(hdc, 0, 0, szText, sizeof(szText) / sizeof(WCHAR));
-
-			EndPaint(hwnd, &ps);
-
-			g_btxt = true;
-
-		}
-
-		return 0;
+		//}
+		//return 0;
 
 	}
 
@@ -167,9 +126,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	{
 
-		::PostQuitMessage(0);	//向消息队列投递一个WM_QUIT 消息,促使GetMessage 函数返回0,结束消息循环
+		PostQuitMessage(0);	//向消息队列投递一个WM_QUIT 消息,促使GetMessage 函数返回0,结束消息循环
 
-		return 0;
+		//return 0;
 
 	}
 
@@ -209,6 +168,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	}
 
-	return ::DefWindowProc(hwnd, msg, wParam, lParam);	// 将我们不处理的消息交给系统做默认处理
+	return DefWindowProc(hwnd, msg, wParam, lParam);	// 将我们不处理的消息交给系统做默认处理
 
+}
+WinForm::WinForm(HWND h, const Language* L)
+{
+	Paramter* param = new Paramter{ NULL, h, L, NULL };
+	CreateThread(NULL, 0, winFormTask, param, 0, NULL);
 }

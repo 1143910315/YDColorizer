@@ -1,5 +1,7 @@
+#include <regex>
+
 #include "MyRichEditView.h"
-MyRichEditView::MyRichEditView(HWND hwndParent, const Language* L)
+MyRichEditView::MyRichEditView(HWND hwndParent, long top,long width ,const Language* L)
 {
 	/*InitCommonControls();
 	HINSTANCE hinstrich = LoadLibraryW(TEXT("RichEd20.Dll"));
@@ -27,18 +29,21 @@ MyRichEditView::MyRichEditView(HWND hwndParent, const Language* L)
 	InitCommonControls();
 	HINSTANCE hinstrich = LoadLibraryW(TEXT("RichEd20.Dll"));
 	if (!hinstrich) {
-		::MessageBoxW(NULL, L->lessDLL, L->error, MB_ICONHAND);
+		MessageBoxW(NULL, L->lessDLL, L->error, MB_ICONHAND);
 		return;
 	}
 	hRichEdit = CreateWindowExW(0, RICHEDIT_CLASSW, TEXT(""),
 		WS_BORDER | WS_CHILD | WS_VISIBLE |
 		ES_MULTILINE | WS_VSCROLL|WS_HSCROLL | ES_AUTOVSCROLL | WS_TABSTOP,
-		0, 0, 200, 100, hwndParent, NULL, GetModuleHandle(NULL), NULL);
+		0, top, width, 100, hwndParent, NULL, GetModuleHandle(NULL), NULL);
 	if (hRichEdit == NULL)
 	{
-		::MessageBoxW(NULL, L->CreateRichEditViewerror, L->error, MB_ICONHAND);
+		MessageBoxW(NULL, L->CreateRichEditViewerror, L->error, MB_ICONHAND);
 		return;
 	}
+	//ShowWindow(hRichEdit, SW_SHOW);	 //隐藏窗口	 
+
+	//UpdateWindow(hRichEdit);	 //刷新窗口客户区
 	//获取选择区域
 	CHARRANGE d;
 	SendMessage(hRichEdit, EM_EXGETSEL, 0, (LPARAM)&d);
@@ -110,4 +115,13 @@ CFM_UNDERLINE	:	dwEffects is valid.*/
 	//cformat.szFaceName;
 	SendMessage(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);
 	return false;
+}
+
+void MyRichEditView::setText()
+{
+}
+
+HWND MyRichEditView::getHwnd()
+{
+	return hRichEdit;
 }
