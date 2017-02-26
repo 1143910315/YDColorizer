@@ -1,7 +1,7 @@
 /*************************************************
 Author:            |メ破坏者☆
-Date:              |2017-02-13
-version：          |0.1.0
+Date:              |2017-02-27
+version：          |0.2.0
 Description:       |封装一些多次使用的函数
 **************************************************/
 #pragma once
@@ -18,6 +18,8 @@ public:
 	LPWSTR UTF8ToGBK(const LPWSTR strUTF8);
 	LPWSTR UTF8ToGBK(const LPSTR strUTF8);
 	bool equal(const LPWSTR a, const LPWSTR b, UINT32 size);
+	bool nextNumIsValid(const LPWSTR lpwstr,int wcharNum);
+	int Wchar2color(WCHAR first,WCHAR second);
 private:
 	//char *GetDLLPath();
 	//const char* fileSet = "YDColorizerConfig.ini";//配置文件名

@@ -38,9 +38,11 @@ DWORD WINAPI monitor(LPVOID lpParamter) {
 		GetWindowInfo(param->objectHwnd, &info1);
 		RECT rect1 = info1.rcClient;
 		MoveWindow(param->RichEditHwnd, rect.left - rect1.left, rect.top - rect1.top, rect.right - rect.left, rect.bottom - rect.top, true);
-		LPWSTR text = (LPWSTR)malloc(100 * sizeof(WCHAR));
-		/*int reInt =*/ GetWindowTextW(param->objectTextHwnd, text, 100);
-		param->RichEditView->setText(text);
+		int len = 100 * sizeof(WCHAR);//缓冲区大小
+		LPWSTR text = (LPWSTR)malloc(len);
+		/*int reInt =*/ GetWindowTextW(param->objectTextHwnd, text, len);//TODO 如果缓存不够，reInt等于缓存区大小，以后处理
+		text[len / sizeof(len) - 1] = NULL;//临时策略，防止溢出，当适配了内存后将不再需要
+		//param->RichEditView->setText(text,len);
 		/*char str[10];
 		sprintf(str, "%d", reInt);
 		MessageBox(NULL, text, T.ChartoWCHAR(str, 10), MB_OK);*/
@@ -91,6 +93,7 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 	GetWindowInfo(param->objectHwnd, &info);
 	RECT rect = info.rcWindow;
 	MyRichEditView RichEdit = MyRichEditView(hwnd, info.rcClient.bottom - info.rcClient.top, info.rcClient.right - info.rcClient.left, param->language);
+	param->RichEditView = &RichEdit;
 	UpdateWindow(hwnd);	 //刷新窗口客户区
 
 	MoveWindow(param->objectHwnd, rect.left, rect.top, rect.right - rect.left + 200, rect.bottom - rect.top + 200, true);

@@ -1,7 +1,7 @@
 /*************************************************
 Author:            |メ破坏者☆
-Date:              |2017-02-07
-version：          |0.0.0
+Date:              |2017-02-26
+version：          |0.0.1
 Description:       |富文本控件
 **************************************************/
 #pragma once
@@ -11,12 +11,13 @@ Description:       |富文本控件
 //#include <afxrich.h>
 #pragma comment(lib,"comctl32.lib")
 #include "Language.h"
+#include "Tool.h"
 class MyRichEditView 
 {
 public:
 	MyRichEditView(HWND hwndParent,long top,long width, const Language* L);
 	bool SetColor();
-	void setText(LPWSTR text);
+	void setText(const LPWSTR text,int len);
 	HWND getHwnd();
 	//Config();
 	//WCHAR* initialize();
@@ -25,6 +26,7 @@ public:
 	WCHAR* ChartoWCHAR(const char* source, int sourceSize);*/
 private:
 	HWND hRichEdit;
+	Tool T=Tool();
 	//char *GetDLLPath();
 	//const char* fileSet = "YDColorizerConfig.ini";//配置文件名
 	//const LPCWSTR globalSet = TEXT("Application");//全局配置项

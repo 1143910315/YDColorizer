@@ -76,6 +76,51 @@ bool Tool::equal(const LPWSTR a, const LPWSTR b, UINT32 size)
 	}
 	return true;
 }
+bool Tool::nextNumIsValid(const LPWSTR lpwstr, int wcharNum)
+{
+	for (int i = 0; i < wcharNum; i++)
+	{
+		if (lpwstr[i] == NULL) {
+			return false;
+		}
+	}
+	return true;
+}
+int Tool::Wchar2color(WCHAR first, WCHAR second)
+{
+	int a;
+	if (first >= TEXT('0') && first <= TEXT('9'))
+	{
+		a = (first - TEXT('0')) * 16;
+	}
+	else if (first >= TEXT('a') && first <= TEXT('f'))
+	{
+		a = (first - TEXT('a') + 10) * 16;
+	}
+	else if (first >= TEXT('A') && first <= TEXT('F'))
+	{
+		a = (first - TEXT('A') + 10) * 16;
+	}
+	else {
+		return -1;
+	}
+	if (second >= TEXT('0') && second <= TEXT('9'))
+	{
+		a += second - TEXT('0');
+	}
+	else if (second >= TEXT('a') && second <= TEXT('f'))
+	{
+		a += second - TEXT('a') + 10;
+	}
+	else if (second >= TEXT('A') && second <= TEXT('F'))
+	{
+		a += second - TEXT('A') + 10;
+	}
+	else {
+		return -1;
+	}
+	return a;
+}
 /*
 string UTF8ToGBK(const std::string& strUTF8)
 {
