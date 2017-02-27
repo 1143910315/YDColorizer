@@ -10,8 +10,7 @@
 #include "Tool.h"
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);//消息处理函数原形
 //各种信息结构，想添加成员请加至末尾，否则可能引发参数错误！！
-struct Paramter
-{
+struct Paramter {
 	HWND hwnd = NULL;//伪窗口，这是假的！
 	HWND objectHwnd = NULL;//物编弹窗句柄
 	HWND objectTextHwnd = NULL;//物编弹窗里文本框的句柄
@@ -29,8 +28,7 @@ Others:           |用于释放创建的窗口
 DWORD WINAPI monitor(LPVOID lpParamter) {
 	Paramter* param = (Paramter*)lpParamter;
 	Tool T = Tool();
-	while (IsWindow(param->objectHwnd))
-	{
+	while (IsWindow(param->objectHwnd)) {
 		WINDOWINFO info;
 		GetWindowInfo(param->RichEditHwnd, &info);
 		RECT rect = info.rcWindow;
@@ -42,7 +40,8 @@ DWORD WINAPI monitor(LPVOID lpParamter) {
 		LPWSTR text = (LPWSTR)malloc(len);
 		/*int reInt =*/ GetWindowTextW(param->objectTextHwnd, text, len);//TODO 如果缓存不够，reInt等于缓存区大小，以后处理
 		text[len / sizeof(len) - 1] = NULL;//临时策略，防止溢出，当适配了内存后将不再需要
-		//param->RichEditView->setText(text,len);
+		param->RichEditView->setText(text, len);
+		free(text);
 		/*char str[10];
 		sprintf(str, "%d", reInt);
 		MessageBox(NULL, text, T.ChartoWCHAR(str, 10), MB_OK);*/
@@ -82,8 +81,7 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 		GetModuleHandle(NULL),							//程序实例句柄
 		NULL											//没有用户数据
 	);
-	if (hwnd == NULL)
-	{
+	if (hwnd == NULL) {
 		MessageBoxW(NULL, TEXT("创建窗口出错"), TEXT("error"), MB_ICONHAND);
 		delete param;
 		return 0;
@@ -96,7 +94,7 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 	param->RichEditView = &RichEdit;
 	UpdateWindow(hwnd);	 //刷新窗口客户区
 
-	MoveWindow(param->objectHwnd, rect.left, rect.top, rect.right - rect.left + 200, rect.bottom - rect.top + 200, true);
+	MoveWindow(param->objectHwnd, rect.left, rect.top, rect.right - rect.left , rect.bottom - rect.top + 100, true);
 	SetParent(RichEdit.getHwnd(), param->objectHwnd);
 	CreateThread(NULL, 0, monitor, param, 0, NULL);
 	param->RichEditHwnd = RichEdit.getHwnd();
@@ -129,6 +127,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:	//窗口客户区需要重画
 
 	{
+		//HWND hwnd = (HWND)lParam;
+		//if (IsWindow(hwnd)) {
+		//	PAINTSTRUCT ps;
+		//	HDC hdc = BeginPaint(hwnd, &ps);
+		//	//SetBkMode(hdc, OPAQUE);
+		//	//SetTextColor(hdc, RGB(255, 0, 0));
+		//	SetBkColor(hdc, RGB(0, 0, 0));
+		//	//TextOut(hdc, 0, 0, msg, sizeof(msg) - 1);
+		//	//ValidateRect(hwnd,NULL);
+		//	EndPaint(hwnd, &ps);
+		//	break;
+		//}
+
 		//ShowWindow(hwnd, SW_HIDE);
 		//if (g_btxt == false)
 		//{
@@ -141,7 +152,27 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		//return 0;
 
 	}
+	case WM_CTLCOLOREDIT:
+	{
+		/*HDC hdc = (HDC)wParam;
+		SetBkMode(hdc, OPAQUE);
+		SetBkColor(hdc, RGB(255, 0, 0));
+		ReleaseDC(hwnd, hdc);
 
+		return (LRESULT)NULL;*/
+
+		//COLORREF c=SetBkColor((HDC)wParam, RGB(255, 0, 0));
+		//break;
+
+		//HWND hwnd = (HWND)lParam;
+		//if (IsWindow(hwnd)) {
+		//	HDC hdc2 = (HDC)wParam;
+		//	//SetTextColor(hdc2, RGB(255, 0, 0));
+		//	SetBkColor(hdc2, RGB(0, 0, 0));
+		//	//SetBkMode(hdc2, OPAQUE);
+		//	break;
+		//}
+	}
 	case WM_DESTROY:	//正在销毁窗口
 
 	{
@@ -191,8 +222,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, msg, wParam, lParam);	// 将我们不处理的消息交给系统做默认处理
 
 }
-WinForm::WinForm(HWND h, HWND textH, const Language* L)
-{
+WinForm::WinForm(HWND h, HWND textH, const Language* L) {
 	Paramter* param = new Paramter{ NULL, h, textH, L, NULL };
 	CreateThread(NULL, 0, winFormTask, param, 0, NULL);
 }

@@ -1,8 +1,7 @@
 //#include <regex>
 
 #include "MyRichEditView.h"
-MyRichEditView::MyRichEditView(HWND hwndParent, long top, long width, const Language* L)
-{
+MyRichEditView::MyRichEditView(HWND hwndParent, long top, long width, const Language* L) {
 	/*InitCommonControls();
 	HINSTANCE hinstrich = LoadLibraryW(TEXT("RichEd20.Dll"));
 	if (!hinstrich) {
@@ -36,11 +35,35 @@ MyRichEditView::MyRichEditView(HWND hwndParent, long top, long width, const Lang
 		WS_BORDER | WS_CHILD | WS_VISIBLE |
 		ES_MULTILINE | WS_VSCROLL | WS_HSCROLL | ES_AUTOVSCROLL | WS_TABSTOP,
 		0, top, width, 100, hwndParent, NULL, GetModuleHandle(NULL), NULL);
-	if (hRichEdit == NULL)
-	{
+	if (hRichEdit == NULL) {
 		MessageBoxW(NULL, L->CreateRichEditViewerror, L->error, MB_ICONHAND);
 		return;
 	}
+		CHARFORMATA cformat;
+		cformat.cbSize = sizeof(cformat);
+		cformat.dwMask = CFM_COLOR;
+		cformat.crTextColor = RGB(0, 0, 0);
+		cformat.dwEffects = 0;
+		SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//重置选择区域格式
+
+		/*HDC hdc = GetDC(hRichEdit);
+		SetBkMode(hdc, OPAQUE);
+		SetBkColor(hdc, RGB(255, 0, 0));*/
+
+	//WM_ERASEBKGND;
+	//COLORREF t= RGB(0, 0, 0);
+	//t= SetBkColor(GetDC(hRichEdit), RGB(0, 0, 0));
+	//
+	//if (CLR_INVALID != t) {//设置背景黑色
+	//	CHARFORMATA cformat;
+	//	cformat.cbSize = sizeof(cformat);
+	//	cformat.dwMask = CFM_COLOR;
+	//	cformat.crTextColor = RGB(255, 255, 255);
+	//	cformat.dwEffects = 0;
+	//	SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//重置选择区域格式
+	//}
+
+
 	//ShowWindow(hRichEdit, SW_SHOW);	 //隐藏窗口	 
 
 	//UpdateWindow(hRichEdit);	 //刷新窗口客户区
@@ -78,8 +101,7 @@ Codepage通常就两种值 ANSI代码页 CP_ACP ，Unicode 1200
 //SendMessage(hRichEdit, EM_GETSELTEXT, 0, (LPARAM)buffer);
 }
 
-bool MyRichEditView::SetColor()
-{
+bool MyRichEditView::SetColor() {
 	CHARFORMATW cformat;
 	cformat.cbSize = sizeof(cformat);
 	cformat.dwMask = CFM_COLOR;
@@ -108,8 +130,7 @@ CFM_UNDERLINE	:	dwEffects is valid.*/
 	return false;
 }
 
-void MyRichEditView::setText(const LPWSTR text, int len)
-{
+void MyRichEditView::setText(const LPWSTR text, int len) {
 	LPWSTR buffer = (LPWSTR)malloc(len);//目前来看，转化为彩色文本不可能超出原来的长度
 	int i = -1;
 	int bufferLen = 0;
@@ -118,6 +139,12 @@ void MyRichEditView::setText(const LPWSTR text, int len)
 	CHARRANGE a{ 0, SendMessageW(hRichEdit, EM_GETTEXTLENGTHEX, (WPARAM)&lengthstrust, (LPARAM)0) /*获取文本长度*/ };
 	SendMessageW(hRichEdit, EM_EXSETSEL, 0, (LPARAM)&a);//改变选择区域														
 	SendMessageW(hRichEdit, EM_REPLACESEL, 0, (LPARAM)TEXT(""));//清空选择文本
+	CHARFORMATA cformat;
+	cformat.cbSize = sizeof(cformat);
+	cformat.dwMask = CFM_COLOR;
+	cformat.crTextColor = RGB(0, 0, 0);
+	cformat.dwEffects = 0;
+	SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//重置选择区域格式
 	int selectMin = 0;//颜色替换的起始位置
 	int A;//替换的颜色，此色为透明度，忽略
 	int R;//替换的颜色
@@ -137,8 +164,7 @@ void MyRichEditView::setText(const LPWSTR text, int len)
 				buffer[bufferLen++] = TEXT('\n');// 将字符'\n'输入到缓冲区
 				i++;// 跳过n或N
 				continue;
-			}
-			else if (((i + 9) < len) && T.nextNumIsValid(text + i, 10) && ((text[i + 1] == TEXT('c')) || (text[i + 1] == TEXT('C'))))// 颜色开始
+			} else if (((i + 9) < len) && T.nextNumIsValid(text + i, 10) && ((text[i + 1] == TEXT('c')) || (text[i + 1] == TEXT('C'))))// 颜色开始
 			{
 				A = T.Wchar2color(text[i + 2], text[i + 3]);//忽略透明度
 				R = T.Wchar2color(text[i + 4], text[i + 5]);//忽略透明度
@@ -154,9 +180,6 @@ void MyRichEditView::setText(const LPWSTR text, int len)
 				{
 					selectMin += bufferLen;
 					buffer[bufferLen++] = NULL;//让缓冲区结束
-					int selectEnd = SendMessageW(hRichEdit, EM_GETTEXTLENGTHEX, (WPARAM)&lengthstrust, (LPARAM)0);
-					CHARRANGE a{ selectEnd, selectEnd };
-					SendMessageW(hRichEdit, EM_EXSETSEL, 0, (LPARAM)&a);//改变选择区域		
 					SendMessageW(hRichEdit, EM_REPLACESEL, 0, (LPARAM)buffer);//将缓冲区文本输入
 					//			txtPreviewClone.AppendText(buffer.ToString());// 将缓冲字符和换行输出
 					bufferLen = 0;// 清空缓冲区
@@ -164,22 +187,27 @@ void MyRichEditView::setText(const LPWSTR text, int len)
 					i += 9;// 跳过c或C和8位的颜色值
 					continue;
 				}
-			}
-			else if (((i + 1) < len) && ((text[i + 1] == TEXT('r')) || (text[i + 1] == TEXT('R'))))// 颜色结束
+			} else if (((i + 1) < len) && ((text[i + 1] == TEXT('r')) || (text[i + 1] == TEXT('R'))))// 颜色结束
 			{
 				buffer[bufferLen] = NULL;//让缓冲区结束
 				int selectEnd = SendMessageW(hRichEdit, EM_GETTEXTLENGTHEX, (WPARAM)&lengthstrust, (LPARAM)0);
 				CHARRANGE a{ selectEnd, selectEnd };
 				SendMessageW(hRichEdit, EM_EXSETSEL, 0, (LPARAM)&a);//改变选择区域		
 				SendMessageW(hRichEdit, EM_REPLACESEL, 0, (LPARAM)buffer);//将缓冲区文本输入
-				CHARRANGE b{ selectMin, selectMin + bufferLen };
-				//CHARRANGE b{ 1, 3 };
+				CHARRANGE b{ selectMin, selectMin + bufferLen };//变色区间
+				selectMin++;
 				SendMessageW(hRichEdit, EM_EXSETSEL, 0, (LPARAM)&b);//改变选择区域		
 				CHARFORMATA cformat;
 				cformat.cbSize = sizeof(cformat);
 				cformat.dwMask = CFM_COLOR;
 				cformat.crTextColor = RGB(R, G, B);
-				SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//TODO 设置选择区域格式，有问题，暂时留着
+				cformat.dwEffects = 0;
+				SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//设置选择区域格式
+				selectEnd = SendMessageW(hRichEdit, EM_GETTEXTLENGTHEX, (WPARAM)&lengthstrust, (LPARAM)0);
+				CHARRANGE c{ selectEnd, selectEnd };
+				SendMessageW(hRichEdit, EM_EXSETSEL, 0, (LPARAM)&c);//重置选择区域		
+				cformat.crTextColor = RGB(0, 0, 0);
+				SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//重置选择区域格式
 				bufferLen = 0;// 清空缓冲区
 				//		txtPreviewClone.AppendText(buffer.ToString());// 将缓冲字符和换行输出
 		//		txtPreviewClone.SelectionColor = Color.White;
@@ -190,11 +218,8 @@ void MyRichEditView::setText(const LPWSTR text, int len)
 		}
 		buffer[bufferLen++] = temp;// 将字符输入到缓冲区
 	}
-	if (bufferLen!=0) {
-		buffer[bufferLen ++] = NULL;//让缓冲区结束
-		int selectEnd = SendMessageW(hRichEdit, EM_GETTEXTLENGTHEX, (WPARAM)&lengthstrust, (LPARAM)0);
-		CHARRANGE a{ selectEnd, selectEnd };
-		SendMessageW(hRichEdit, EM_EXSETSEL, 0, (LPARAM)&a);//改变选择区域		
+	if (bufferLen != 0) {
+		buffer[bufferLen++] = NULL;//让缓冲区结束	
 		SendMessageW(hRichEdit, EM_REPLACESEL, 0, (LPARAM)buffer);//将缓冲区文本输入
 	}
 	//public static void ConvertToPreviewTextBox(MyTextBox txtEdit, MyRichTextBox txtPreview)
@@ -580,7 +605,6 @@ void MyRichEditView::setText(const LPWSTR text, int len)
 	//}
 }
 
-HWND MyRichEditView::getHwnd()
-{
+HWND MyRichEditView::getHwnd() {
 	return hRichEdit;
 }
