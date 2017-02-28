@@ -34,21 +34,27 @@ MyRichEditView::MyRichEditView(HWND hwndParent, long top, long width, const Lang
 	hRichEdit = CreateWindowExW(0, RICHEDIT_CLASSW, TEXT(""),
 		WS_BORDER | WS_CHILD | WS_VISIBLE |
 		ES_MULTILINE | WS_VSCROLL | WS_HSCROLL | ES_AUTOVSCROLL | WS_TABSTOP,
-		0, top, width, 100, hwndParent, NULL, GetModuleHandle(NULL), NULL);
+		5, top, width, 100, hwndParent, NULL, GetModuleHandle(NULL), NULL);
 	if (hRichEdit == NULL) {
 		MessageBoxW(NULL, L->CreateRichEditViewerror, L->error, MB_ICONHAND);
 		return;
 	}
-		CHARFORMATA cformat;
-		cformat.cbSize = sizeof(cformat);
-		cformat.dwMask = CFM_COLOR;
-		cformat.crTextColor = RGB(0, 0, 0);
-		cformat.dwEffects = 0;
-		SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//重置选择区域格式
+	SendMessageW(hRichEdit, EM_SETBKGNDCOLOR, 0, RGB(0, 0, 55));//背景颜色设置
+	WCHAR font[32] = TEXT("微软雅黑");
+	CHARFORMATW cformat;
+	cformat.cbSize = sizeof(cformat);
+	cformat.dwMask = CFM_COLOR | CFM_FACE | CFM_SIZE;
+	cformat.crTextColor = RGB(255, 255, 255);
+	cformat.dwEffects = 0;
+	cformat.yHeight = 9*20;//12px字体大小
+	for (int i = 0; i < 32; i++) {
+		cformat.szFaceName[i] = font[i];
+	}
+	SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//重置选择区域格式
 
-		/*HDC hdc = GetDC(hRichEdit);
-		SetBkMode(hdc, OPAQUE);
-		SetBkColor(hdc, RGB(255, 0, 0));*/
+	/*HDC hdc = GetDC(hRichEdit);
+	SetBkMode(hdc, OPAQUE);
+	SetBkColor(hdc, RGB(255, 0, 0));*/
 
 	//WM_ERASEBKGND;
 	//COLORREF t= RGB(0, 0, 0);
@@ -139,11 +145,16 @@ void MyRichEditView::setText(const LPWSTR text, int len) {
 	CHARRANGE a{ 0, SendMessageW(hRichEdit, EM_GETTEXTLENGTHEX, (WPARAM)&lengthstrust, (LPARAM)0) /*获取文本长度*/ };
 	SendMessageW(hRichEdit, EM_EXSETSEL, 0, (LPARAM)&a);//改变选择区域														
 	SendMessageW(hRichEdit, EM_REPLACESEL, 0, (LPARAM)TEXT(""));//清空选择文本
-	CHARFORMATA cformat;
+	WCHAR font[32] = TEXT("微软雅黑");//字体
+	CHARFORMATW cformat;
 	cformat.cbSize = sizeof(cformat);
-	cformat.dwMask = CFM_COLOR;
-	cformat.crTextColor = RGB(0, 0, 0);
+	cformat.dwMask = CFM_COLOR | CFM_FACE | CFM_SIZE;
+	cformat.crTextColor = RGB(255, 255, 255);
 	cformat.dwEffects = 0;
+	cformat.yHeight = 9*20;
+	for (int i = 0; i < 32; i++) {
+		cformat.szFaceName[i] = font[i];
+	}
 	SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//重置选择区域格式
 	int selectMin = 0;//颜色替换的起始位置
 	int A;//替换的颜色，此色为透明度，忽略
@@ -179,7 +190,7 @@ void MyRichEditView::setText(const LPWSTR text, int len) {
 					//		if (IsColor(strColor) == true)// 可以转化为颜色
 				{
 					selectMin += bufferLen;
-					buffer[bufferLen++] = NULL;//让缓冲区结束
+					buffer[bufferLen] = NULL;//让缓冲区结束
 					SendMessageW(hRichEdit, EM_REPLACESEL, 0, (LPARAM)buffer);//将缓冲区文本输入
 					//			txtPreviewClone.AppendText(buffer.ToString());// 将缓冲字符和换行输出
 					bufferLen = 0;// 清空缓冲区
@@ -195,18 +206,22 @@ void MyRichEditView::setText(const LPWSTR text, int len) {
 				SendMessageW(hRichEdit, EM_EXSETSEL, 0, (LPARAM)&a);//改变选择区域		
 				SendMessageW(hRichEdit, EM_REPLACESEL, 0, (LPARAM)buffer);//将缓冲区文本输入
 				CHARRANGE b{ selectMin, selectMin + bufferLen };//变色区间
-				selectMin++;
+				selectMin+=  bufferLen;
 				SendMessageW(hRichEdit, EM_EXSETSEL, 0, (LPARAM)&b);//改变选择区域		
-				CHARFORMATA cformat;
+				CHARFORMATW cformat;
 				cformat.cbSize = sizeof(cformat);
-				cformat.dwMask = CFM_COLOR;
+				cformat.dwMask = CFM_COLOR | CFM_FACE | CFM_SIZE;
 				cformat.crTextColor = RGB(R, G, B);
 				cformat.dwEffects = 0;
+				cformat.yHeight = 9*20;
+				for (int i = 0; i < 32; i++) {
+					cformat.szFaceName[i] = font[i];
+				}
 				SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//设置选择区域格式
 				selectEnd = SendMessageW(hRichEdit, EM_GETTEXTLENGTHEX, (WPARAM)&lengthstrust, (LPARAM)0);
 				CHARRANGE c{ selectEnd, selectEnd };
 				SendMessageW(hRichEdit, EM_EXSETSEL, 0, (LPARAM)&c);//重置选择区域		
-				cformat.crTextColor = RGB(0, 0, 0);
+				cformat.crTextColor = RGB(255, 255, 255);
 				SendMessageW(hRichEdit, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&cformat);//重置选择区域格式
 				bufferLen = 0;// 清空缓冲区
 				//		txtPreviewClone.AppendText(buffer.ToString());// 将缓冲字符和换行输出
@@ -222,67 +237,6 @@ void MyRichEditView::setText(const LPWSTR text, int len) {
 		buffer[bufferLen++] = NULL;//让缓冲区结束	
 		SendMessageW(hRichEdit, EM_REPLACESEL, 0, (LPARAM)buffer);//将缓冲区文本输入
 	}
-	//public static void ConvertToPreviewTextBox(MyTextBox txtEdit, MyRichTextBox txtPreview)
-	//{
-	//	int cursorLocation = txtEdit.SelectionStart;
-	//	txtEdit.Text = txtEdit.Text.Replace(Environment.NewLine, "|n");// 转换回车换行为|n
-	//	txtEdit.SelectionStart = cursorLocation;
-	//	char[] charArray = txtEdit.Text.ToCharArray();// 将原来的字符串转为字符数组处理，并转换回车换行为|n
-	//	StringBuilder buffer = new StringBuilder();// 用于缓冲还没输出的字符
-
-	//	for (int i = 0; i < charArray.Length; i++)
-	//	{
-	//		if (charArray[i] == '|')// 转义字符
-	//		{
-	//			if ((i + 1) < charArray.Length && charArray[i + 1] == '|')// 字符'|'
-	//			{
-	//				buffer.Append('|');// 将字符'|'输入到缓冲区
-	//				i++;
-	//				continue;
-	//			}
-	//			if (((i + 1) < charArray.Length) && ((charArray[i + 1] == 'n') || (charArray[i + 1] == 'N')))// 换行
-	//			{
-	//				Color currentColor = txtPreviewClone.SelectionColor;// 保存当前颜色
-	//				txtPreviewClone.AppendText(buffer.ToString() + Environment.NewLine);// 将缓冲字符和换行输出
-	//				buffer = new StringBuilder();// 清空缓冲区
-	//				txtPreviewClone.SelectionColor = currentColor;// 恢复颜色
-	//				i++;// 跳过n或N
-	//				continue;
-	//			}
-	//			else if (((i + 9) < charArray.Length) && ((charArray[i + 1] == 'c') || (charArray[i + 1] == 'C')))// 颜色开始
-	//			{
-	//				string strColor = charArray[i + 2].ToString() + charArray[i + 3].ToString()// A
-	//					+ charArray[i + 4].ToString() + charArray[i + 5].ToString()// R
-	//					+ charArray[i + 6].ToString() + charArray[i + 7].ToString()// G
-	//					+ charArray[i + 8].ToString() + charArray[i + 9].ToString()// B
-	//					;
-	//				if (IsColor(strColor) == true)// 可以转化为颜色
-	//				{
-	//					txtPreviewClone.AppendText(buffer.ToString());// 将缓冲字符和换行输出
-	//					buffer = new StringBuilder();// 清空缓冲区
-	//					txtPreviewClone.SelectionColor = ConvertToColor(strColor);
-	//					i += 9;// 跳过c或C和8位的颜色值
-	//					continue;
-	//				}
-	//			}
-	//			else if (((i + 1) < charArray.Length) && ((charArray[i + 1] == 'r') || (charArray[i + 1] == 'R')))// 颜色结束
-	//			{
-	//				txtPreviewClone.AppendText(buffer.ToString());// 将缓冲字符和换行输出
-	//				buffer = new StringBuilder();// 清空缓冲区
-	//				txtPreviewClone.SelectionColor = Color.White;
-	//				i++;// 跳过r或R
-	//				continue;
-	//			}
-	//		}
-	//		buffer.Append(charArray[i].ToString());// 将字符输入到缓冲区
-	//	}
-	//	txtPreviewClone.AppendText(buffer.ToString());// 将剩余的字符输出
-
-	//	txtPreview.Rtf = txtPreviewClone.Rtf;
-	//	txtPreviewClone.Dispose();
-	//	txtEdit.lockTextChange = false;
-	//	txtPreview.lockTextChange = false;
-	//}
 
 	//public static void ConvertToEditTextBox(MyRichTextBox txtPreview, MyTextBox txtEdit)
 	//{

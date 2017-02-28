@@ -36,11 +36,19 @@ DWORD WINAPI monitor(LPVOID lpParamter) {
 		GetWindowInfo(param->objectHwnd, &info1);
 		RECT rect1 = info1.rcClient;
 		MoveWindow(param->RichEditHwnd, rect.left - rect1.left, rect.top - rect1.top, rect.right - rect.left, rect.bottom - rect.top, true);
-		int len = 100 * sizeof(WCHAR);//缓冲区大小
+		int size = 100;//成员数
+		int len = size * sizeof(WCHAR);//缓冲区大小
 		LPWSTR text = (LPWSTR)malloc(len);
-		/*int reInt =*/ GetWindowTextW(param->objectTextHwnd, text, len);//TODO 如果缓存不够，reInt等于缓存区大小，以后处理
-		text[len / sizeof(len) - 1] = NULL;//临时策略，防止溢出，当适配了内存后将不再需要
-		param->RichEditView->setText(text, len);
+		int reInt = GetWindowTextW(param->objectTextHwnd, text, size);
+		while (reInt >= size) {
+			free(text);
+			size = reInt + 1;
+			len = size * sizeof(WCHAR);
+			text = (LPWSTR)malloc(len);
+			reInt = GetWindowTextW(param->objectTextHwnd, text, size);
+		}
+		text[size - 1] = NULL;//防止溢出
+		param->RichEditView->setText(text, size);
 		free(text);
 		/*char str[10];
 		sprintf(str, "%d", reInt);
@@ -59,7 +67,8 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 		sizeof(wndclass),								//定义结构的大小
 		CS_HREDRAW | CS_VREDRAW | CS_OWNDC,				//定义窗口样式
 		WndProc,										//指定本窗口的消息处理函数
-		NULL, NULL,										//没有额外的类内存，没有额外的窗口内存
+		NULL,                                           //没有额外的类内存
+		NULL,										    //额外的窗口内存
 		GetModuleHandleW(NULL),							//实例句柄
 		LoadIconW(NULL, IDI_APPLICATION),				//使用默认的图标
 		LoadCursorW(NULL, IDC_ARROW),					//使用默认的光标
@@ -79,7 +88,7 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 		NULL,											//父窗口句柄
 		NULL,											//没有菜单句柄
 		GetModuleHandle(NULL),							//程序实例句柄
-		NULL											//没有用户数据
+		lpParamter									    //没有用户数据
 	);
 	if (hwnd == NULL) {
 		MessageBoxW(NULL, TEXT("创建窗口出错"), TEXT("error"), MB_ICONHAND);
@@ -87,6 +96,8 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 		return 0;
 	}
 	param->hwnd = hwnd;
+	//SetWindowLongW(hwnd, 0, (LONG)param);
+	//Paramter* param1 = (Paramter*)GetWindowLongW(hwnd, 0);
 	WINDOWINFO info;
 	GetWindowInfo(param->objectHwnd, &info);
 	RECT rect = info.rcWindow;
@@ -94,7 +105,7 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 	param->RichEditView = &RichEdit;
 	UpdateWindow(hwnd);	 //刷新窗口客户区
 
-	MoveWindow(param->objectHwnd, rect.left, rect.top, rect.right - rect.left , rect.bottom - rect.top + 100, true);
+	MoveWindow(param->objectHwnd, rect.left, rect.top, rect.right - rect.left + 10, rect.bottom - rect.top + 150, true);
 	SetParent(RichEdit.getHwnd(), param->objectHwnd);
 	CreateThread(NULL, 0, monitor, param, 0, NULL);
 	param->RichEditHwnd = RichEdit.getHwnd();
@@ -116,14 +127,67 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	//LPCWSTR szText = TEXT("My first window process ");
 
-	//HDC hdc;	//声明设备环境句柄
-
+	HDC hdc;	//声明设备环境句柄
+	static HWND hwndButton;
 	//PAINTSTRUCT ps;
-
+	static Paramter* param;
 	switch (msg)
 
 	{
+	case   WM_CREATE:
+	{
+		/*   The   window   is   being   created.   Create   our   button
+		*   window   now.   */
+		//TEXTMETRIC   tm;
 
+		/*   First   we   use   the   system   fixed   font   size   to   choose
+		*   a   nice   button   size.   */
+		//hdc = GetDC(hwnd);
+		//SelectObject(hdc, GetStockObject(SYSTEM_FIXED_FONT));
+		//GetTextMetrics(hdc, &tm);
+		//long cx = tm.tmAveCharWidth * 30;
+		//long cy = (tm.tmHeight + tm.tmExternalLeading) * 2;
+		//ReleaseDC(hwnd, hdc);
+
+		/*   Now   create   the   button   */
+		//param = (Paramter*)lParam;
+		//param = (Paramter*)param->hwnd;//呃，指针指向内存的数据作为指针。。。然而我不知道怎么做。。。
+		//hwndButton = CreateWindowW(
+		//	TEXT("button"),/*   Builtin   button   class   */
+		//	TEXT("Click   Here "),
+		//	WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+		//	200, 100, 100,300,
+		//	hwnd,/*   Parent   is   this   window.   */
+		//	(HMENU)1,/*   Control   ID:   1   */
+		//	GetModuleHandle(NULL),
+		//	NULL
+		//);
+		//SetParent(hwndButton, param->objectHwnd);
+		//int i=GetLastError();
+		return   0;
+	}
+	//case   WM_COMMAND:
+	//	/*   Check   the   control   ID,   notification   code   and
+	//	*   control   handle   to   see   if   this   is   a   button   click
+	//	*   message   from   our   child   button.   */
+	//	if (LOWORD(wParam) == 1 && HIWORD(wParam) == BN_CLICKED && (HWND)lParam == hwndButton) {
+	//		/*   Our   button   was   clicked.   Close   the   window.   */
+	//		//Paramter* param = (Paramter*)GetWindowLong(hwnd, 0);
+	//		int size = 100;//成员数
+	//		int len = size * sizeof(WCHAR);//缓冲区大小
+	//		LPWSTR text = (LPWSTR)malloc(len);
+	//		int reInt = GetWindowTextW(param->objectTextHwnd, text, size);
+	//		while (reInt >= size) {
+	//			free(text);
+	//			size = reInt + 1;
+	//			len = size * sizeof(WCHAR);
+	//			text = (LPWSTR)malloc(len);
+	//			reInt = GetWindowTextW(param->objectTextHwnd, text, size);
+	//		}
+	//		text[size - 1] = NULL;//防止溢出
+	//		param->RichEditView->setText(text, size);
+	//		free(text);
+	//	}
 	case WM_PAINT:	//窗口客户区需要重画
 
 	{
