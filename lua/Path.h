@@ -1,13 +1,13 @@
 /*************************************************
 Author:            |メ破坏者☆
-Date:              |2017-02-13
-version：          |0.2.0
+Date:              |2017-02-28
+version：          |0.2.1
 Description:       |获取目录、文件路径
 **************************************************/
 #pragma once
-#include <windows.h>
-class Path
-{
+#include <Windows.h>
+//与目录操作相关
+class Path {
 public:
 	char* GetPath();//获取Dll所在目录，以'\'结尾的路径
 	char* GetYDWEPath();//获取Dll所在目录，不以'\'结尾的路径

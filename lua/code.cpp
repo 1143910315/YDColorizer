@@ -1,13 +1,12 @@
 /*************************************************
 Author:            |メ破坏者☆
-Date:              |2017-02-05
-version：          |0.0.0
+Date:              |2017-02-28
+version：          |0.0.1
 Description:       |颜色插件主要函数
 **************************************************/
 #include <windows.h>
 #include "Config.h"
 #include "Language.h"
-#include "WinForm.h"
 #include "WinFind.h"
 extern "C" {
 #include "lua.h"
@@ -18,33 +17,15 @@ bool loop = true;//传递关闭插件信号
 /*************************************************
 Function:         |task
 Description:      |颜色插件的主体功能
-Calls:            |
 *************************************************/
 DWORD WINAPI task(LPVOID lpParamter) {
-	/*WCHAR* path = Path().GetPath();
-	MessageBox(NULL, path, TEXT("World"), MB_OK);
-	free(path);*/
-
-	//UINT m_nXPos = GetPrivateProfileIntW(TEXT("SECTION 1"), //节名
-	//	TEXT("XPos"), //项名
-	//	0, //没找到此项时的缺省返回值
-	//	TEXT("C:\\test\\debug\\test.ini")); //配置文件的准确路径
 	Config C = Config();
 	Language L = Language(C.GetLanguage());
-	//WinForm WF = WinForm(&L);
 	WinFind WF = WinFind(&L);
-
-	ULONGLONG time = GetTickCount64();
-	while (loop)
-	{
-		ULONGLONG now = GetTickCount64();
-		if (now - time > 1000)
-		{
-			time = now;
-			WF.Find();
-		}
+	while (loop) {
+		WF.Find();
+		Sleep(1000);
 	}
-	MessageBox(NULL, TEXT("Hello"), TEXT("World"), MB_OK);
 	return 0;
 }
 /*************************************************
@@ -53,8 +34,7 @@ Description:      |开启颜色插件功能
 Calls:            |task
 Others:           |此函数供lua脚本调用
 *************************************************/
-static int start(lua_State* L)
-{
+static int start(lua_State* L) {
 	HANDLE hThread = CreateThread(NULL, 0, task, NULL, 0, NULL);
 	return 0;
 }
@@ -63,8 +43,7 @@ Function:         |stop
 Description:      |关闭颜色插件功能
 Others:           |此函数供lua脚本调用
 *************************************************/
-static int stop(lua_State *L)
-{
+static int stop(lua_State *L) {
 	loop = false;
 	return 0;
 	///////////////////////////////////////////////////////
