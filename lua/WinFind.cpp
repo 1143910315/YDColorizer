@@ -40,15 +40,14 @@ void WinFind::Find() {
 	DWORD pid = _getpid();//当前进程的pid
 	DWORD p;//搜索到的窗口进程pid
 	int titleSize = 50 * sizeof(WCHAR);
-	LPWSTR str = (LPWSTR)malloc(titleSize);//WARNING 目前来说，应该不存在超50字的窗口标题，如果出现问题，在WinForm.cpp里有类似解决方法
 	while (hwnd != 0) {
 		GetWindowThreadProcessId(hwnd, &p);
 		if (pid == p) {//防止两个颜色插件互相干扰
-			memset(str, 0, titleSize);
-			GetWindowTextW(hwnd, str, 50 * sizeof(WCHAR));
+			LPWSTR str = (LPWSTR)malloc(titleSize);//WARNING 目前来说，应该不存在超50字的窗口标题，如果出现问题，在WinForm.cpp里有类似解决方法
+			GetWindowTextW(hwnd, str, 50 );
 			//此处跳过的0是触发器的“字符串”，由于改变窗口大小会引发控件的适配，不像物编那样方便，这里保留触发器处的操作。
 			for (int i = 1; i < 8; i++) {
-				if (Tool().equal(str, westring[i], 50 * sizeof(WCHAR))) {
+				if (Tool().equal(str, westring[i], 50)) {
 					HWND textH = FindWindowExW(hwnd, 0, TEXT("edit"), NULL);
 					if (textH != NULL) {
 						win *temp = &wininfo;
@@ -56,7 +55,7 @@ void WinFind::Find() {
 							if (temp->hwnd == 0) {
 								temp->hwnd = hwnd;//记录这个句柄已经创建了插件
 								temp->next = new win{ NULL, NULL };
-								new WinForm(hwnd, textH, L);
+								WinForm(hwnd, textH, L);
 								break;
 							}
 							if (temp->hwnd == hwnd) {
@@ -68,15 +67,15 @@ void WinFind::Find() {
 								temp->hwnd = temp->next->hwnd;
 								win *tempfree = temp->next;
 								temp->next = temp->next->next;
-								free(tempfree);//清理已销毁窗口句柄
+								delete tempfree;//清理已销毁窗口句柄
 							}
 						}
 					}
 					break;
 				}
 			}
+			free(str);
 		}
 		hwnd = FindWindowExW(0, hwnd, NULL, NULL);
 	}
-	free(str);
 }

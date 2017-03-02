@@ -13,7 +13,7 @@ Description:       |富文本控件
 class MyRichEditView {
 public:
 	MyRichEditView(HWND hwndParent, long top, long width, const Language* L);
-	bool SetColor();//应用颜色到选择的文本
+	bool SetColor(COLORREF color);//应用颜色到选择的文本
 	void setText(const LPWSTR text, int len);//设置未格式文本到富文本编辑框
 	HWND getHwnd();//获取富文本编辑框句柄
 private:

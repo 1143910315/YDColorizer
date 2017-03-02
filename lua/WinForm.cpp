@@ -97,25 +97,21 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 	}
 	param->RichEditView = &RichEdit;
 	param->RichEditHwnd = RichEditHwnd;
-	UpdateWindow(hwnd);	 //刷新窗口客户区
+	UpdateWindow(hwnd);//刷新窗口客户区
 	MoveWindow(param->objectHwnd, rect.left, rect.top, rect.right - rect.left + 10, rect.bottom - rect.top + 150, true);
 	SetParent(RichEditHwnd, param->objectHwnd);
 	CreateThread(NULL, 0, monitor, param, 0, NULL);//启动监视线程
 	MSG msg;
-	while (GetMessage(&msg, NULL, 0, 0))   //从消息队列中取出消息,交给消息处理函数处理,直到GetMessage 函数返回FALSE ,结束消息循环
+	while (GetMessage(&msg, NULL, 0, 0))//从消息队列中取出消息,交给消息处理函数处理,直到GetMessage 函数返回FALSE ,结束消息循环
 	{
-		TranslateMessage(&msg);	 //转化键盘消息
-		DispatchMessageW(&msg);	 //将消息发送给消息处理函数
+		TranslateMessage(&msg);//转化键盘消息
+		DispatchMessageW(&msg);//将消息发送给消息处理函数
 	}
 	delete param;
 	ExitThread(0);
-	//FreeLibrary(hinstrich);
 	return 0;
 }
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	HDC hdc;	//声明设备环境句柄
-	static HWND hwndButton;
-	static Paramter* param;
 	switch (msg) {
 	case WM_DESTROY://正在销毁窗口
 	{

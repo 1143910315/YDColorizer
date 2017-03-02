@@ -21,11 +21,23 @@ Description:      |颜色插件的主体功能
 DWORD WINAPI task(LPVOID lpParamter) {
 	Config C = Config();
 	Language L = Language(C.GetLanguage());
+	HINSTANCE hinstrich;//RichEdit的DLL
+	hinstrich = LoadLibraryW(TEXT("Riched20.Dll"));
+	int i = 0;
+	while (hinstrich == NULL) {
+		if (i++ == 10) {
+			MessageBoxW(NULL, L.lessDLL, L.error, MB_ICONERROR);
+			return 0;
+		}
+		Sleep(1000);
+		hinstrich = LoadLibraryW(TEXT("Riched20.Dll"));//有时候貌似不能立即加载DLL
+	}
 	WinFind WF = WinFind(&L);
 	while (loop) {
 		WF.Find();
 		Sleep(1000);
 	}
+	FreeLibrary(hinstrich);
 	return 0;
 }
 /*************************************************
