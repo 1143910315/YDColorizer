@@ -18,4 +18,5 @@ public:
 	bool equal(const LPWSTR a, const LPWSTR b, UINT32 size);//判断（宽字节文本）是否全等
 	bool nextNumIsValid(const LPWSTR lpwstr, int wcharNum);//接下来的wcharNum个宽字节文本是否有效
 	int Wchar2color(WCHAR first, WCHAR second);//将宽字节文本转化为整数
+	bool color2hex(LPWSTR target,COLORREF color);//将颜色转换为文本，必需6字节
 };

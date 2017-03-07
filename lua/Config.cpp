@@ -16,21 +16,6 @@ int Config::GetLanguage() {
 /*************************************************
 Function:         |WESTRING_COD_TYPE_STRING
 Description:      |获取WESTRING_COD_TYPE_STRING配置
-Return:           |返回一个指针指向宽字符文本，需要手动free
-*************************************************/
-LPWSTR Config::WESTRING_COD_TYPE_STRING() {
-	LPSTR ret = (LPSTR)malloc(40 * sizeof(CHAR));
-	memset(ret, 0, 40 * sizeof(CHAR));
-	LPSTR p = Path().GetWorldEditStringsFileLPSTR();
-	GetPrivateProfileStringA(lpAppName, WESTRING_COD_TYPE_STRINGstr, NULL, ret, 40, p);
-	free(p);
-	LPWSTR re = T.UTF8ToGBK(ret);
-	free(ret);
-	return re;
-}
-/*************************************************
-Function:         |WESTRING_COD_TYPE_STRING
-Description:      |获取WESTRING_COD_TYPE_STRING配置
 Input:            |size    ：target的大小
 				   path    ：配置文件路径
 Output:           |target  ：将读取的配置写入此地址
@@ -40,21 +25,6 @@ void Config::WESTRING_COD_TYPE_STRING(LPWSTR target, int size, LPSTR path) {
 	GetPrivateProfileStringA(lpAppName, WESTRING_COD_TYPE_STRINGstr, NULL, ret, size, path);
 	T.UTF8ToGBK(ret, target, size);
 	free(ret);
-}
-/*************************************************
-Function:         |WESTRING_UE_DLG_EDITVALUE
-Description:      |获取WESTRING_UE_DLG_EDITVALUE配置
-Return:           |返回一个指针指向宽字符文本，需要手动free
-*************************************************/
-LPWSTR Config::WESTRING_UE_DLG_EDITVALUE() {
-	LPSTR ret = (LPSTR)malloc(40 * sizeof(CHAR));
-	memset(ret, 0, 40 * sizeof(CHAR));
-	LPSTR p = Path().GetWorldEditStringsFileLPSTR();
-	GetPrivateProfileStringA(lpAppName, WESTRING_UE_DLG_EDITVALUEstr, NULL, ret, 40, p);
-	free(p);
-	LPWSTR re = T.UTF8ToGBK(ret);
-	free(ret);
-	return re;
 }
 /*************************************************
 Function:         |WESTRING_UE_DLG_EDITVALUE
@@ -72,21 +42,6 @@ void Config::WESTRING_UE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path) {
 /*************************************************
 Function:         |WESTRING_IE_DLG_EDITVALUE
 Description:      |获取WESTRING_IE_DLG_EDITVALUE配置
-Return:           |返回一个指针指向宽字符文本，需要手动free
-*************************************************/
-LPWSTR Config::WESTRING_IE_DLG_EDITVALUE() {
-	LPSTR ret = (LPSTR)malloc(40 * sizeof(CHAR));
-	memset(ret, 0, 40 * sizeof(CHAR));
-	LPSTR p = Path().GetWorldEditStringsFileLPSTR();
-	GetPrivateProfileStringA(lpAppName, WESTRING_IE_DLG_EDITVALUEstr, NULL, ret, 40, p);
-	free(p);
-	LPWSTR re = T.UTF8ToGBK(ret);
-	free(ret);
-	return re;
-}
-/*************************************************
-Function:         |WESTRING_IE_DLG_EDITVALUE
-Description:      |获取WESTRING_IE_DLG_EDITVALUE配置
 Input:            |size    ：target的大小
 				   path    ：配置文件路径
 Output:           |target  ：将读取的配置写入此地址
@@ -96,21 +51,6 @@ void Config::WESTRING_IE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path) {
 	GetPrivateProfileStringA(lpAppName, WESTRING_IE_DLG_EDITVALUEstr, NULL, ret, size, path);
 	T.UTF8ToGBK(ret, target, size);
 	free(ret);
-}
-/*************************************************
-Function:         |WESTRING_AE_DLG_EDITVALUE
-Description:      |获取WESTRING_AE_DLG_EDITVALUE配置
-Return:           |返回一个指针指向宽字符文本，需要手动free
-*************************************************/
-LPWSTR Config::WESTRING_AE_DLG_EDITVALUE() {
-	LPSTR ret = (LPSTR)malloc(40 * sizeof(CHAR));
-	memset(ret, 0, 40 * sizeof(CHAR));
-	LPSTR p = Path().GetWorldEditStringsFileLPSTR();
-	GetPrivateProfileStringA(lpAppName, WESTRING_AE_DLG_EDITVALUEstr, NULL, ret, 40, p);
-	free(p);
-	LPWSTR re = T.UTF8ToGBK(ret);
-	free(ret);
-	return re;
 }
 /*************************************************
 Function:         |WESTRING_AE_DLG_EDITVALUE
@@ -128,21 +68,6 @@ void Config::WESTRING_AE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path) {
 /*************************************************
 Function:         |WESTRING_FE_DLG_EDITVALUE
 Description:      |获取WESTRING_FE_DLG_EDITVALUE配置
-Return:           |返回一个指针指向宽字符文本，需要手动free
-*************************************************/
-LPWSTR Config::WESTRING_FE_DLG_EDITVALUE() {
-	LPSTR ret = (LPSTR)malloc(40 * sizeof(CHAR));
-	memset(ret, 0, 40 * sizeof(CHAR));
-	LPSTR p = Path().GetWorldEditStringsFileLPSTR();
-	GetPrivateProfileStringA(lpAppName, WESTRING_FE_DLG_EDITVALUEstr, NULL, ret, 40, p);
-	free(p);
-	LPWSTR re = T.UTF8ToGBK(ret);
-	free(ret);
-	return re;
-}
-/*************************************************
-Function:         |WESTRING_FE_DLG_EDITVALUE
-Description:      |获取WESTRING_FE_DLG_EDITVALUE配置
 Input:            |size    ：target的大小
 				   path    ：配置文件路径
 Output:           |target  ：将读取的配置写入此地址
@@ -152,21 +77,6 @@ void Config::WESTRING_FE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path) {
 	GetPrivateProfileStringA(lpAppName, WESTRING_FE_DLG_EDITVALUEstr, NULL, ret, size, path);
 	T.UTF8ToGBK(ret, target, size);
 	free(ret);
-}
-/*************************************************
-Function:         |WESTRING_BE_DLG_EDITVALUE
-Description:      |获取WESTRING_BE_DLG_EDITVALUE配置
-Return:           |返回一个指针指向宽字符文本，需要手动free
-*************************************************/
-LPWSTR Config::WESTRING_BE_DLG_EDITVALUE() {
-	LPSTR ret = (LPSTR)malloc(40 * sizeof(CHAR));
-	memset(ret, 0, 40 * sizeof(CHAR));
-	LPSTR p = Path().GetWorldEditStringsFileLPSTR();
-	GetPrivateProfileStringA(lpAppName, WESTRING_BE_DLG_EDITVALUEstr, NULL, ret, 40, p);
-	free(p);
-	LPWSTR re = T.UTF8ToGBK(ret);
-	free(ret);
-	return re;
 }
 /*************************************************
 Function:         |WESTRING_BE_DLG_EDITVALUE
@@ -184,21 +94,6 @@ void Config::WESTRING_BE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path) {
 /*************************************************
 Function:         |WESTRING_DE_DLG_EDITVALUE
 Description:      |获取WESTRING_DE_DLG_EDITVALUE配置
-Return:           |返回一个指针指向宽字符文本，需要手动free
-*************************************************/
-LPWSTR Config::WESTRING_DE_DLG_EDITVALUE() {
-	LPSTR ret = (LPSTR)malloc(40 * sizeof(CHAR));
-	memset(ret, 0, 40 * sizeof(CHAR));
-	LPSTR p = Path().GetWorldEditStringsFileLPSTR();
-	GetPrivateProfileStringA(lpAppName, WESTRING_DE_DLG_EDITVALUEstr, NULL, ret, 40, p);
-	free(p);
-	LPWSTR re = T.UTF8ToGBK(ret);
-	free(ret);
-	return re;
-}
-/*************************************************
-Function:         |WESTRING_DE_DLG_EDITVALUE
-Description:      |获取WESTRING_DE_DLG_EDITVALUE配置
 Input:            |size    ：target的大小
 				   path    ：配置文件路径
 Output:           |target  ：将读取的配置写入此地址
@@ -208,21 +103,6 @@ void Config::WESTRING_DE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path) {
 	GetPrivateProfileStringA(lpAppName, WESTRING_DE_DLG_EDITVALUEstr, NULL, ret, size, path);
 	T.UTF8ToGBK(ret, target, size);
 	free(ret);
-}
-/*************************************************
-Function:         |WESTRING_GE_DLG_EDITVALUE
-Description:      |获取WESTRING_GE_DLG_EDITVALUE配置
-Return:           |返回一个指针指向宽字符文本，需要手动free
-*************************************************/
-LPWSTR Config::WESTRING_GE_DLG_EDITVALUE() {
-	LPSTR ret = (LPSTR)malloc(40 * sizeof(CHAR));
-	memset(ret, 0, 40 * sizeof(CHAR));
-	LPSTR p = Path().GetWorldEditStringsFileLPSTR();
-	GetPrivateProfileStringA(lpAppName, WESTRING_GE_DLG_EDITVALUEstr, NULL, ret, 40, p);
-	free(p);
-	LPWSTR re = T.UTF8ToGBK(ret);
-	free(ret);
-	return re;
 }
 /*************************************************
 Function:         |WESTRING_GE_DLG_EDITVALUE

@@ -11,21 +11,13 @@ Description:       |读取配置
 class Config {
 public:
 	int GetLanguage();//从配置获取语言
-	LPWSTR WESTRING_COD_TYPE_STRING(); //= 字符串
 	void WESTRING_COD_TYPE_STRING(LPWSTR target, int size, LPSTR path); //= 字符串
-	LPWSTR WESTRING_UE_DLG_EDITVALUE();//= 编辑单位值 - %s
 	void WESTRING_UE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path);//= 编辑单位值 - %s
-	LPWSTR WESTRING_IE_DLG_EDITVALUE();//= 编辑物品值 - %s
 	void WESTRING_IE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path);//= 编辑物品值 - %s
-	LPWSTR WESTRING_AE_DLG_EDITVALUE();//= 编辑技能值 - %s
 	void WESTRING_AE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path);//= 编辑技能值 - %s
-	LPWSTR WESTRING_FE_DLG_EDITVALUE();//= 编辑效果值 - %s
 	void WESTRING_FE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path);//= 编辑效果值 - %s
-	LPWSTR WESTRING_BE_DLG_EDITVALUE();//= 编辑可破坏物值 - %s
 	void WESTRING_BE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path);//= 编辑可破坏物值 - %s
-	LPWSTR WESTRING_DE_DLG_EDITVALUE();//= 编辑装饰物值 - %s
 	void WESTRING_DE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path);//= 编辑装饰物值 - %s
-	LPWSTR WESTRING_GE_DLG_EDITVALUE();//= 编辑科技值 - %s
 	void WESTRING_GE_DLG_EDITVALUE(LPWSTR target, int size, LPSTR path);//= 编辑科技值 - %s
 private:
 	Tool T = Tool();//工具类

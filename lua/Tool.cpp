@@ -161,3 +161,45 @@ int Tool::Wchar2color(WCHAR first, WCHAR second) {
 	}
 	return a;
 }
+
+bool Tool::color2hex(LPWSTR target, COLORREF color) {
+	BYTE R = (BYTE)color;
+	BYTE G = (BYTE)(color >> 8);
+	BYTE B = (BYTE)(color >> 16);
+	int a = R / 16, b = R % 16;
+	if (a > 9) {
+		target[0] = 'a' + a - 10;
+	} else {
+		target[0] = '0' + a;
+	}
+	if (b > 9) {
+		target[1] = 'a' + b - 10;
+	} else {
+		target[1] = '0' + b;
+	}
+	a = G / 16, b = G % 16;
+	if (a > 9) {
+		target[2] = 'a' + a - 10;
+	} else {
+		target[2] = '0' + a;
+	}
+	if (b > 9) {
+		target[3] = 'a' + b - 10;
+	} else {
+		target[3] = '0' + b;
+	}
+	a = B / 16, b = B % 16;
+	if (a > 9) {
+		target[4] = 'a' + a - 10;
+	} else {
+		target[4] = '0' + a;
+	}
+	if (b > 9) {
+		target[5] = 'a' + b - 10;
+	} else {
+		target[5] = '0' + b;
+	}
+	return true;
+}
+
+

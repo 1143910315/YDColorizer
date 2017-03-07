@@ -219,6 +219,7 @@
     <ClCompile Include="MyRichEditView.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="Tool.cpp" />
+    <ClCompile Include="WinControl.cpp" />
     <ClCompile Include="WinFind.cpp" />
     <ClCompile Include="WinForm.cpp" />
   </ItemGroup>
@@ -232,6 +233,7 @@
     <ClInclude Include="MyRichEditView.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="Tool.h" />
+    <ClInclude Include="WinControl.h" />
     <ClInclude Include="WinFind.h" />
     <ClInclude Include="WinForm.h" />
   </ItemGroup>

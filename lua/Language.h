@@ -14,4 +14,8 @@ public:
 	LPCWSTR error;//错误
 	LPCWSTR CreateRichEditViewerror;//创建富文本编辑框失败
 	LPCWSTR CreateWindowError;//创建窗口失败
+	LPCWSTR gainText;//获取文本
+	LPCWSTR applyText;//应用文本
+	LPCWSTR colorAlarm;//颜色警告
+	LPCWSTR alarm;//警告
 };
