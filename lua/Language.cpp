@@ -13,6 +13,8 @@ Language::Language(int language) {
 		CreateWindowError = TEXT("创建窗口出错！");
 		gainText = TEXT("获取");
 		applyText = TEXT("应用");
+		gainTipText = TEXT("将魔兽颜色文本转化到颜色文本。");
+		applyTipText = TEXT("将颜色文本转化到魔兽颜色文本。");
 		colorAlarm = TEXT("请不要在物编使用透明度，因为这是无效的属性！");
 		alarm = TEXT("警告");
 		break;

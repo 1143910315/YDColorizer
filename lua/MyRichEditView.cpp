@@ -16,17 +16,17 @@ Input:            |hwndParent ：父窗口句柄
 				   width      ：宽度
 				   L          ：需要传递语言类
 *************************************************/
-MyRichEditView::MyRichEditView(HWND hwndParent, long top, long width, const Language* L) {
+MyRichEditView::MyRichEditView(HWND hwndParent, long left, long top, long width, long height, const Language* L) {
 	this->L = L;
 	InitCommonControls();
 	hRichEdit = CreateWindowExW(0, RICHEDIT_CLASSW, TEXT(""),
-		WS_BORDER | WS_CHILD | WS_VISIBLE | ES_MULTILINE | WS_VSCROLL | ES_AUTOVSCROLL | WS_TABSTOP,
-		5, top, width, 150, hwndParent, NULL, GetModuleHandle(NULL), NULL);
+		WS_BORDER | WS_CHILD | WS_VISIBLE | ES_MULTILINE | WS_VSCROLL /*| ES_AUTOVSCROLL*/ | WS_TABSTOP,
+		left, top, width, height, hwndParent, NULL, GetModuleHandle(NULL), NULL);
 	if (hRichEdit == NULL) {
 		MessageBoxW(NULL, L->CreateRichEditViewerror, L->error, MB_ICONERROR);
 		return;
 	}
-	ShowScrollBar(hRichEdit, SB_VERT, true);
+	//ShowScrollBar(hRichEdit, SB_VERT, true);
 	SendMessageW(hRichEdit, EM_SETBKGNDCOLOR, 0, RGB(0, 0, 55));//背景颜色设置
 	DEFAULTFORMAT(defaultFormat);
 	defaultFormat.crTextColor = RGB(255, 255, 255);//默认颜色是白色
@@ -44,7 +44,7 @@ bool MyRichEditView::SetColor(COLORREF color) {
 Function:         |setText
 Description:      |设置富文本编辑框的文本
 Input:            |text ：未格式文本
-                   len  ：文本长度
+				   len  ：文本长度
 *************************************************/
 void MyRichEditView::setText(const LPWSTR text, int len) {
 	SendMessageW(hRichEdit, WM_SETTEXT, 0, NULL);//清空文本

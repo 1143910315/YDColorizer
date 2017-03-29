@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26206.0
+VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "YDColorizer", "lua\lua.vcxproj", "{3321F3E2-1A02-4680-B655-9C8A1BC2D5EE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C7778A78-051D-4A16-8BE4-002E46559E44} = {C7778A78-051D-4A16-8BE4-002E46559E44}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lualib", "lualib\lualib.vcxproj", "{C7778A78-051D-4A16-8BE4-002E46559E44}"
 EndProject

@@ -3,14 +3,15 @@
 #include "Tool.h"
 #include "WinControl.h"
 #include <windows.h>
+/*CreateThread() https://msdn.microsoft.com/en-us/library/windows/desktop/ms682453(v=vs.85).aspx */
+#define height 200
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);//消息处理函数原形
-//各种信息结构，想添加成员请加至末尾，否则可能引发参数错误！！
+//各种信息结构
 struct Paramter {
 	HWND hwnd = NULL;//伪窗口，这是假的！
 	HWND objectHwnd = NULL;//物编弹窗句柄
 	HWND objectTextHwnd = NULL;//物编弹窗里文本框的句柄
 	const Language* language = NULL;//语言包，一个DLL只创建一次
-	HWND RichEditHwnd = NULL;//富文本控件句柄
 	WinControl* Control = NULL;//窗口其它基本控件
 };
 /*************************************************
@@ -55,17 +56,18 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 	WINDOWINFO info;
 	GetWindowInfo(param->objectHwnd, &info);
 	RECT rect = info.rcWindow;
+	int width = info.rcClient.right - info.rcClient.left;
 	//主窗口的窗口句柄
 	HWND hwnd = CreateWindowExW(
-		0,												//不定义扩展样式
-		szClassName,									//类名
-		NULL,											//窗口标题
-		WS_CHILDWINDOW,								//窗口风格，不在任务栏显示
-		0, info.rcClient.bottom - info.rcClient.top, 500, 200,								//窗口X轴坐标，Y轴坐标，窗口宽度，窗口高度
-		param->objectHwnd,											//父窗口句柄
-		NULL,											//没有菜单句柄
-		GetModuleHandle(NULL),							//程序实例句柄
-		NULL									    //没有用户数据
+		0,																//不定义扩展样式
+		szClassName,													//类名
+		NULL,															//窗口标题
+		WS_CHILDWINDOW/*WS_OVERLAPPEDWINDOW*/,							//窗口风格，不在任务栏显示
+		0, info.rcClient.bottom - info.rcClient.top, width, height,		//窗口X轴坐标，Y轴坐标，窗口宽度，窗口高度
+		param->objectHwnd,												//父窗口句柄
+		NULL,															//没有菜单句柄
+		GetModuleHandle(NULL),											//程序实例句柄
+		NULL															//没有用户数据
 	);
 	if (hwnd == NULL) {
 		MessageBoxW(NULL, param->language->CreateWindowError, param->language->error, MB_ICONERROR);
@@ -74,7 +76,7 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 	}
 	SetWindowLongW(hwnd, 0, (LONG)param);
 	param->hwnd = hwnd;
-	WinControl* Control = new WinControl(hwnd, info.rcClient.bottom - info.rcClient.top, param->language,param->objectTextHwnd);
+	WinControl* Control = new WinControl(hwnd, width, height, param->language, param->objectTextHwnd);
 	param->Control = Control;
 	Control->click_But(1);
 	//MyRichEditView RichEdit = MyRichEditView(hwnd, info.rcClient.bottom - info.rcClient.top, info.rcClient.right - info.rcClient.left, param->language);
@@ -83,9 +85,7 @@ DWORD WINAPI winFormTask(LPVOID lpParamter) {
 		delete param;
 		return 0;
 	}
-	param->RichEditHwnd = RichEditHwnd;
-	int width = info.rcClient.right - info.rcClient.left + 10;
-	MoveWindow(param->objectHwnd, rect.left, rect.top, width > 500 ? width : 500, rect.bottom - rect.top + 200, true);
+	MoveWindow(param->objectHwnd, rect.left, rect.top, rect.right - rect.left /*> 500 ? width : 500*/, rect.bottom - rect.top + 200, true);
 	UpdateWindow(hwnd);//刷新窗口客户区
 	ShowWindow(hwnd, SW_SHOW);
 	CreateThread(NULL, 0, monitor, param, 0, NULL);//启动监视线程
@@ -115,6 +115,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	return DefWindowProc(hwnd, msg, wParam, lParam);	// 将我们不处理的消息交给系统做默认处理
 }
 WinForm::WinForm(HWND h, HWND textH, const Language* L) {
-	Paramter* param = new Paramter{ NULL, h, textH, L, NULL };
-	CreateThread(NULL, 0, winFormTask, param, 0, NULL);
+	Paramter* param = new Paramter();
+	param->objectHwnd = h;
+	param->objectTextHwnd = textH;
+	param->language = L;
+	CreateThread(NULL, 0, winFormTask, param, 0/*CREATE_SUSPENDED*/, NULL);/* ResumeThread*//* CloseHandle*/
 }

@@ -16,6 +16,8 @@ public:
 	LPCWSTR CreateWindowError;//创建窗口失败
 	LPCWSTR gainText;//获取文本
 	LPCWSTR applyText;//应用文本
+	LPWSTR gainTipText;//获取文本的提示
+	LPWSTR applyTipText;//应用文本的提示
 	LPCWSTR colorAlarm;//颜色警告
 	LPCWSTR alarm;//警告
 };

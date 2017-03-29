@@ -4,7 +4,7 @@
 #include <Windows.h>
 class WinControl {
 public:
-	WinControl(HWND hwnd, int top, const Language* L, HWND textHWND);
+	WinControl(HWND hwnd, int width, int height, const Language* L, HWND textHWND);
 	void click_But(WORD hwnd_but);
 	HWND RichEditHWND();
 	MyRichEditView* RichEditView();
